@@ -25,7 +25,7 @@ parser.add_argument(
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    dir_path = os.path.dirname(os.path.realpath(os.curdir))
+    dir_path = os.path.realpath(os.curdir)
     print(dir_path)
     grades_file = os.path.join(dir_path, 'logs/grades.json')
     with open(grades_file, 'r', encoding='UTF-8') as f:

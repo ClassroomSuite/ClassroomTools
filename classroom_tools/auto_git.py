@@ -16,7 +16,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     try:
         print('Enter CRTL+C to exit process')
-        repo_dir = os.path.abspath('')
+        repo_dir = os.path.realpath(os.curdir)
         filename = os.path.join(repo_dir, args.filename)
         r = git.Repo.init(repo_dir)
         timeout = threading.Event()
