@@ -68,8 +68,8 @@ def update_readme(grades, readme_file):
 
 if __name__ == '__main__':
     dir_path = os.path.dirname(os.path.realpath(os.curdir))
-    grades_file = os.path.join(dir_path, '../logs/grades.json')
-    readme_file = os.path.join(dir_path, '../README.md')
+    grades_file = os.path.join(dir_path, 'logs/grades.json')
+    readme_file = os.path.join(dir_path, 'README.md')
     with open(grades_file, 'r', encoding='UTF-8') as f:
         grades = json.load(f)
         update_readme(grades, readme_file)
