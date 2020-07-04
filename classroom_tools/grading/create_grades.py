@@ -31,10 +31,10 @@ def add_tests_info(results, tests_associations_file):
 
 if __name__ == '__main__':
     dir_path = os.path.dirname(os.path.realpath(os.curdir))
-    log_file = os.path.join(dir_path, '../logs/tests_results.txt')
-    grades_file = os.path.join(dir_path, '../logs/grades.json')
-    tests_associations_file = os.path.join(dir_path, '../scripts/test_associations.json')
-    readme_file = os.path.join(dir_path, '../README.md')
+    log_file = os.path.join(dir_path, 'logs/tests_results.txt')
+    grades_file = os.path.join(dir_path, 'logs/grades.json')
+    tests_associations_file = os.path.join(dir_path, 'scripts/test_associations.json')
+
     results = get_tests_results(log_file)
     add_tests_info(results, tests_associations_file)
     with open(grades_file, 'w', encoding='UTF-8') as f:
