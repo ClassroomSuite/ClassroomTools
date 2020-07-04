@@ -34,7 +34,7 @@ if __name__ == '__main__':
             except Exception as e:
                 print(e)
             finally:
-                time.sleep(60)
+                time.sleep(10)
     except KeyboardInterrupt:
         t.cancel()
         print('\nExiting...\n')
