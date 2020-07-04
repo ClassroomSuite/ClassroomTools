@@ -5,6 +5,6 @@ with open('requirements.txt') as f:
 
 setup(
     name='classroom_tools',
-    packages=find_packages(),
+    packages=find_namespace_packages(),
     install_requires=requirements
 )
