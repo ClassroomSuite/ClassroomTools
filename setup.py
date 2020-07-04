@@ -4,7 +4,7 @@ with open('requirements.txt') as f:
     requirements = list(f.read().splitlines())
 
 setup(
-    name='classroom_tools',
+    name='ClassroomTools',
     packages=find_packages(),
     install_requires=requirements
 )
