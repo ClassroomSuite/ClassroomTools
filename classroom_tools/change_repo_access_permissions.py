@@ -92,7 +92,7 @@ def confirm_changes(args, repo_fullnames):
     print('\nSummary:')
     print(f'\tTotal number of successful permission changes: {num_ok}')
     print(f'\tTotal number of failed permission changes: {num_fail}')
-    if num_fail == 0:
+    if num_fail != 0:
         raise Exception('Couldn\'t apply permission changes')
 
 
