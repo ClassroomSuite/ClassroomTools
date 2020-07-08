@@ -93,7 +93,9 @@ def confirm_changes(args, repo_fullnames):
     print(f'\tTotal number of successful permission changes: {num_ok}')
     print(f'\tTotal number of failed permission changes: {num_fail}')
     if num_fail != 0:
-        raise Exception('Couldn\'t apply permission changes')
+        print('Couldn\'t apply permission changes')
+        exit(1)
+        #raise Exception('Couldn\'t apply permission changes')
 
 
 if __name__ == '__main__':
