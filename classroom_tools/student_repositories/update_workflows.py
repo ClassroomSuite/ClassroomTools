@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import github
 
@@ -50,6 +51,9 @@ def delete_all_workflows(repo):
 
 def add_workflow(repo, path):
     with open(path, 'r') as f:
+        if '.github/workflows/' not in path:
+            head, tail = os.path.split(path)
+            path = '.github/workflows/' + tail
         repo.create_file(
             path=path,
             message='Auto added workflow',
@@ -63,7 +67,7 @@ if __name__ == '__main__':
     g = github.Github(login_or_token=args.TOKEN)
     org = g.get_organization(login=args.org_name)
     for repo in org.get_repos():
-        if repo.name.find(args.repo_filter) != -1:
+        if args.repo_filter in repo.name:
             if args.delete_previous_workflows:
                 delete_all_workflows(repo)
             if args.new_workflow_file != '':
