@@ -39,18 +39,28 @@ def confirm_changes(args):
     num_fail = 0
     for repo in get_repositories(args):
         for col in repo.get_collaborators(affiliation='all'):
-            permission = repo.get_collaborator_permission(col)
-            if permission != 'admin':
-                if permission == 'read' and args.new_permission_level == 'pull':
+            if not col.permissions.admin:
+                if col.permissions.pull and args.new_permission_level == 'pull':
                     print(f'Permission: pull\t {repo.name}/{col.login}')
                     num_ok += 1
-                elif permission == 'write' and args.new_permission_level == 'push':
+                elif col.permissions.push and args.new_permission_level == 'push':
                     print(f'Permission: push\t {repo.name}/{col.login}')
                     num_ok += 1
                 else:
                     print(f'\nERROR {repo.name}/{col.login}')
-                    print(permission, end='\n\n')
+                    print(col.permissions, end='\n\n')
                     num_fail += 1
+        for team in repo.get_teams():
+            if team.permission == 'pull' and args.new_permission_level == 'pull':
+                print(f'Permission: pull\t {team.name}')
+                num_ok += 1
+            elif team.permission == 'push' and args.new_permission_level == 'push':
+                print(f'Permission: push\t {team.name}')
+                num_ok += 1
+            else:
+                print(f'\nERROR {team.name}')
+                print(team.permission, end='\n\n')
+                num_fail += 1
     print('\nSummary:')
     print(f'\tTotal number of successful permission changes: {num_ok}')
     print(f'\tTotal number of failed permission changes: {num_fail}')
@@ -61,9 +71,10 @@ def confirm_changes(args):
 def apply_changes(args):
     for repo in get_repositories(args):
         for col in repo.get_collaborators(affiliation='all'):
-            prev_permission = repo.get_collaborator_permission(col)
-            if prev_permission == 'read' or prev_permission == 'write':
+            if not col.permissions.admin:
                 repo.add_to_collaborators(col, permission=args.new_permission_level)
+        for team in repo.get_teams():
+            team.set_repo_permission(repo=repo, permission=args.new_permission_level)
 
 
 if __name__ == '__main__':
