@@ -21,6 +21,7 @@ parser.add_argument(
 parser.add_argument(
     '--delete_previous_workflows',
     default=False,
+    type=bool,
     choices=[True, False],
     help='Delete all workflows from each selected student repositories (to prevent cheating)'
 )
