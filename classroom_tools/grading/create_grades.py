@@ -9,9 +9,9 @@ def get_tests_results(log_file):
     results = []
     for line in f.readlines():
         test_fn_name, *_ = line.split(' ')
-        if line.find('FAIL') != -1:
+        if 'FAIL' in line:
             results.append({'func_name': test_fn_name, 'passing': False})
-        elif line.find('ok') != -1:
+        elif 'ok' in line:
             results.append({'func_name': test_fn_name, 'passing': True})
         else:
             break
