@@ -27,11 +27,11 @@ parser.add_argument(
 parser.add_argument(
     '--new_workflow_file',
     default='',
-    help='A path to a %workflow%.yml file to add in student repositories'
+    help='A path to a %workflow%.yml file to add in students repositories'
 )
 
 
-def delete_workflow(repo, path='.github/worflows/classroom.yml'):
+def delete_workflow(repo, path):
     contents = repo.get_contents(path=path)
     repo.delete_file(
         path=path,
@@ -47,7 +47,7 @@ def delete_all_workflows(repo):
         delete_workflow(repo, path=content_file.path)
 
 
-def add_workflow(repo, path, content):
+def add_workflow(repo, path):
     with open(path, 'r') as f:
         repo.create_file(
             path=path,
@@ -66,4 +66,4 @@ if __name__ == '__main__':
             if args.delete_previous_workflows:
                 delete_all_workflows(repo)
             if args.new_workflow_file != '':
-                add_workflow(repo)
+                add_workflow(repo, path=args.new_workflow_file)
