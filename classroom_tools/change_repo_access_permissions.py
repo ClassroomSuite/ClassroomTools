@@ -43,6 +43,7 @@ def get_repo_names(args):
     else:
         raise Exception(f'Couldn\'t fetch repositories from organization: {args.org_name}\n')
 
+
 def get_collaborators(args, repo_name):
     res = requests.get(
         url=f'https://api.github.com/repos/{repo_name}/collaborators',
@@ -71,6 +72,7 @@ def change_access_permission(args, repo_name, collaborators):
             },
             headers={'Authorization': f'token {args.MANAGE_ACCESS_TOKEN}'}
         )
+
 
 def confirm_changes(args, repo_fullnames):
     num_ok = 0
@@ -105,7 +107,7 @@ if __name__ == '__main__':
         for name in repo_names:
             collaborators = get_collaborators(args, name)
             change_access_permission(args, name, collaborators)
+        confirm_changes(args, repo_names)
     except Exception as e:
         print(e)
         print('Verify that your personal access token is accessible and has the repo and org:admin permissions')
-    confirm_changes(args, repo_names)
