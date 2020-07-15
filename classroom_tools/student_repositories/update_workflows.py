@@ -44,9 +44,12 @@ def delete_workflow(repo, path):
 
 
 def delete_all_workflows(repo):
-    contents = repo.get_contents('.github/workflows/')
-    for content_file in contents:
-        delete_workflow(repo, path=content_file.path)
+    try:
+        contents = repo.get_contents(path='.github/workflows/')
+        for content_file in contents:
+            delete_workflow(repo, path=content_file.path)
+    except github.UnknownObjectException:
+        pass
 
 
 def add_workflow(repo, path):
