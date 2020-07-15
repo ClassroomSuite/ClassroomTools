@@ -27,9 +27,10 @@ parser.add_argument(
     help='Delete all workflows from each selected student repositories (to prevent cheating)'
 )
 parser.add_argument(
-    '--new_workflow_file',
-    default='',
-    help='A path to a %workflow%.yml file to add in students repositories'
+    '--new_workflow_files',
+    default=[],
+    nargs='*',
+    help='Paths to %workflow%.yml files to add in students repositories'
 )
 
 
@@ -73,5 +74,5 @@ if __name__ == '__main__':
         if args.repo_filter in repo.name:
             if args.delete_previous_workflows:
                 delete_all_workflows(repo)
-            if args.new_workflow_file != '':
-                add_workflow(repo, path=args.new_workflow_file)
+            for path in args.new_workflow_files:
+                add_workflow(repo, path=path)
