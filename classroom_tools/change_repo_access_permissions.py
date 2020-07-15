@@ -41,7 +41,7 @@ def get_repo_names(args):
                 repo_names.append(repo['full_name'])
         return repo_names
     else:
-        raise Exception(f'Couldn\'t fetch repositories from organization: {args.org_name}')
+        raise Exception(f'Couldn\'t fetch repositories from organization: {args.org_name}\n{res.text}')
 
 
 def get_collaborators(args, repo_name):
@@ -55,7 +55,7 @@ def get_collaborators(args, repo_name):
     if res.ok:
         return res.json()
     else:
-        raise Exception(f'Couldn\'t fetch collaborators from repository: {args.org_name}/{repo_name}')
+        raise Exception(f'Couldn\'t fetch collaborators from repository: {args.org_name}/{repo_name}\n{res.text}')
 
 
 def change_access_permission(args, repo_name, collaborators):
@@ -96,8 +96,7 @@ def confirm_changes(args, repo_fullnames):
     print(f'\tTotal number of successful permission changes: {num_ok}')
     print(f'\tTotal number of failed permission changes: {num_fail}')
     if num_fail != 0:
-        print('Couldn\'t apply permission changes')
-        exit(1)
+        raise Exception('Couldn\'t apply permission changes')
 
 
 if __name__ == '__main__':
