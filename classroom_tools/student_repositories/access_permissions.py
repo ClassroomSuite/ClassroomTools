@@ -30,7 +30,7 @@ def get_repositories(args):
     g = github.Github(login_or_token=args.TOKEN)
     org = g.get_organization(login=args.org_name)
     for repo in org.get_repos():
-        if repo.name.find(args.repo_filter) != -1:
+        if args.repo_filter in repo.name:
             yield repo
 
 
