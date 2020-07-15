@@ -101,6 +101,8 @@ def confirm_changes(args, repo_names):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    if args.MANAGE_ACCESS_TOKEN == '':
+        print(f'MANAGE_ACCESS_TOKEN is empty')
     try:
         repo_names = get_repo_names(args)
         for name in repo_names:
@@ -110,4 +112,5 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
         print('Verify that your personal access token is accessible and has repo permissions')
+        print('Plans')
         exit(1)
