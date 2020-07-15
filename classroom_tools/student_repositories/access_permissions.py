@@ -75,4 +75,4 @@ if __name__ == '__main__':
         confirm_changes(args)
     except Exception as e:
         print('Verify that your personal access token is accessible and has repo permissions')
-        raise e
+        exit(1)
