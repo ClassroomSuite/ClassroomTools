@@ -16,7 +16,7 @@ parser.add_argument(
 parser.add_argument(
     '--repo_filter',
     required=True,
-    help='Prefix to filter repositories for as given assignment or exercise'
+    help='Prefix to filter repositories for a given assignment or exercise'
 )
 parser.add_argument(
     '--new_permission_level',
