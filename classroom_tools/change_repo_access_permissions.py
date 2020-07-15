@@ -26,7 +26,7 @@ parser.add_argument(
 )
 
 
-def get_repo_fullnames(args):
+def get_repo_names(args):
     res = requests.get(
         url=f'https://api.github.com/orgs/{args.org_name}/repos',
         params={
@@ -34,42 +34,43 @@ def get_repo_fullnames(args):
         },
         headers={'Authorization': f'token {args.MANAGE_ACCESS_TOKEN}'}
     )
-    repo_fullnames = []
-    for repo in res.json():
-        if repo['name'].find(args.repo_base_name) != -1 and len(repo['name']) > len(args.repo_base_name):
-            repo_fullnames.append(repo['full_name'])
-    return repo_fullnames
+    if res.ok:
+        repo_names = []
+        for repo in res.json():
+            if repo['name'].find(args.repo_base_name) != -1 and len(repo['name']) > len(args.repo_base_name):
+                repo_names.append(repo['full_name'])
+        return repo_names
+    else:
+        raise Exception(f'Couldn\'t fetch repositories from organization: {args.org_name}\n')
 
-
-def get_collaborators(args, repo_fullname):
+def get_collaborators(args, repo_name):
     res = requests.get(
-        url=f'https://api.github.com/repos/{repo_fullname}/collaborators',
+        url=f'https://api.github.com/repos/{repo_name}/collaborators',
         params={
             'affiliation': 'all'
         },
         headers={'Authorization': f'token {args.MANAGE_ACCESS_TOKEN}'}
     )
-    return res.json()
+    if res.ok:
+        return res.json()
+    else:
+        raise Exception(f'Couldn\'t fetch collaborators from repository: {args.org_name}/{repo_name}\n')
 
 
-def create_request_urls(args, collaborators):
+def change_access_permission(args, repo_name, collaborators):
     urls = []
     for collaborator in collaborators:
         if collaborator['permissions']['admin'] == False:
             login = collaborator['login']
-            urls.append(f'https://api.github.com/repos/{repo_fullname}/collaborators/{login}')
-    return urls
-
-
-def change_access_permission(args, url):
-    res = requests.put(
-        url=url,
-        json={
-            'permission': args.new_permission_level
-        },
-        headers={'Authorization': f'token {args.MANAGE_ACCESS_TOKEN}'}
-    )
-
+            urls.append(f'https://api.github.com/repos/{repo_name}/collaborators/{login}')
+    for url in urls:
+        res = requests.put(
+            url=url,
+            json={
+                'permission': args.new_permission_level
+            },
+            headers={'Authorization': f'token {args.MANAGE_ACCESS_TOKEN}'}
+        )
 
 def confirm_changes(args, repo_fullnames):
     num_ok = 0
@@ -95,15 +96,15 @@ def confirm_changes(args, repo_fullnames):
     if num_fail != 0:
         print('Couldn\'t apply permission changes')
         exit(1)
-        #raise Exception('Couldn\'t apply permission changes')
 
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    repo_fullnames = get_repo_fullnames(args)
-    for repo_fullname in repo_fullnames:
-        collaborators = get_collaborators(args, repo_fullname)
-        urls = create_request_urls(args, collaborators)
-        for url in urls:
-            change_access_permission(args, url)
-    confirm_changes(args, repo_fullnames)
+    try:
+        repo_names = get_repo_names(args)
+        for name in repo_names:
+            collaborators = get_collaborators(args, name)
+            change_access_permission(args, name, collaborators)
+    except Exception as e:
+        print(e)
+    confirm_changes(args, repo_names)
