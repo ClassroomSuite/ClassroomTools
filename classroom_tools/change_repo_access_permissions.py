@@ -74,22 +74,22 @@ def change_access_permission(args, repo_name, collaborators):
         )
 
 
-def confirm_changes(args, repo_fullnames):
+def confirm_changes(args, repo_names):
     num_ok = 0
     num_fail = 0
-    for repo_fullname in repo_fullnames:
-        collaborators = get_collaborators(args, repo_fullname)
+    for name in repo_names:
+        collaborators = get_collaborators(args, name)
         for collaborator in collaborators:
             if collaborator['permissions']['admin'] == False:
                 login = collaborator['login']
                 if collaborator['permissions']['pull'] and args.new_permission_level == 'pull':
-                    print(f'Permission: pull\t {repo_fullname}/{login}')
+                    print(f'Permission: pull\t {name}/{login}')
                     num_ok += 1
                 elif collaborator['permissions']['push'] and args.new_permission_level == 'push':
-                    print(f'Permission: push\t {repo_fullname}/{login}')
+                    print(f'Permission: push\t {name}/{login}')
                     num_ok += 1
                 else:
-                    print(f'\nERROR {repo_fullname}/{login}')
+                    print(f'\nERROR {name}/{login}')
                     print(collaborator['permissions'], end='\n\n')
                     num_fail += 1
     print('\nSummary:')
