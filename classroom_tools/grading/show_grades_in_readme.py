@@ -7,7 +7,7 @@ import os
 def readme_head(prev_lines):
     split_index = -1
     for i, line in enumerate(prev_lines):
-        if line.find('# ') != -1:
+        if '# ' in line:
             split_index = i
             break
     head = prev_lines[:split_index]
@@ -41,7 +41,7 @@ def results_section(grades):
 def readme_tail(remaining_lines, results_section_ending):
     tail = list(remaining_lines)
     for i, line in enumerate(remaining_lines):
-        if line.find(results_section_ending) != -1:
+        if results_section_ending in line:
             if i + 1 < len(remaining_lines):
                 tail = remaining_lines[i + 1:]
     return tail
