@@ -109,5 +109,5 @@ if __name__ == '__main__':
         confirm_changes(args, repo_names)
     except Exception as e:
         print(e)
-        print('Verify that your personal access token is accessible and has the repo and org:admin permissions')
+        print('Verify that your personal access token is accessible and has repo permissions')
         exit(1)
