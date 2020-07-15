@@ -41,7 +41,7 @@ def get_repo_names(args):
                 repo_names.append(repo['full_name'])
         return repo_names
     else:
-        raise Exception(f'Couldn\'t fetch repositories from organization: {args.org_name}\n')
+        raise Exception(f'Couldn\'t fetch repositories from organization: {args.org_name}')
 
 
 def get_collaborators(args, repo_name):
@@ -55,7 +55,7 @@ def get_collaborators(args, repo_name):
     if res.ok:
         return res.json()
     else:
-        raise Exception(f'Couldn\'t fetch collaborators from repository: {args.org_name}/{repo_name}\n')
+        raise Exception(f'Couldn\'t fetch collaborators from repository: {args.org_name}/{repo_name}')
 
 
 def change_access_permission(args, repo_name, collaborators):
@@ -111,3 +111,4 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
         print('Verify that your personal access token is accessible and has the repo and org:admin permissions')
+        exit(1)
