@@ -143,8 +143,12 @@ if __name__ == '__main__':
         fetch_info = git_repo.remote('origin').pull()
         git_repo.remote('origin').push()
     else:
+        num_repos = 0
         for repo in get_students_repositories(args, g):
+            num_repos += 1
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
             for file in template_files:
                 print(f'\tSyncing: {file.path}')
                 copy_file_to_repo(file=file, repo=repo)
+        print('\nSummary:')
+        print(f'\tTotal number of repositories updated: {num_repos}')
