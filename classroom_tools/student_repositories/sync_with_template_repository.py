@@ -1,18 +1,39 @@
 import argparse
 
+import git
 import github
 
 parser = argparse.ArgumentParser(
     description='Update files in student repositories with files from the template repository'
 )
 parser.add_argument(
-    '--token',
+    '--template_repo_fullname',
     required=True,
-    help='GitHub personal access token with repo permissions'
+    default='INF1007-Exercices/TemplateExercise1',
+    help='Template repo used to create student repositories in format: "Organization/RepositoryName"'
 )
 parser.add_argument(
-    '--single_student_repository',
-    help='Student repo in format: "Organization/RepositoryName" (for a single student repository)'
+    '--as_student_repo_workflow',
+    default=True,
+    type=bool,
+    help=
+    """
+    If true, template files will be written to the local student repo and git commmands will be used to
+    commit/push changes.
+    Otherwise, the GitHub API will be used to create/update the files in all the student repositories
+    matching the --repo_filter within --org_name.
+    """
+)
+# For workflows inside a single student repository: as_student_repo_workflow=True
+parser.add_argument(
+    '--git_repo_path',
+    default='',
+    help='Used only if --as_student_repo_workflow is True'
+)
+# For workflows outside of student repositories: as_student_repo_workflow=False
+parser.add_argument(
+    '--token',
+    help='GitHub personal access token with repo permissions'
 )
 parser.add_argument(
     '--org_name',
@@ -21,12 +42,6 @@ parser.add_argument(
 parser.add_argument(
     '--repo_filter',
     help='Prefix to filter repositories for as given assignment or exercise (for multiples student repositories)'
-)
-parser.add_argument(
-    '--template_repo_fullname',
-    required=True,
-    default='INF1007-Exercices/TemplateExercise1',
-    help='Template repo used to create student repositories in format: "Organization/RepositoryName"'
 )
 parser.add_argument(
     '--files_to_update',
@@ -51,7 +66,7 @@ def get_repo(fullname, g: github.Github):
         return g.get_repo(full_name_or_id=fullname)
     except Exception as e:
         print(e)
-        raise Exception(f'Coun\'t get repo: {fullname}')
+        raise Exception(f'Couldn\'t get repo: {fullname}')
 
 
 def copy_file_to_repo(file, repo):
@@ -74,22 +89,18 @@ def copy_file_to_repo(file, repo):
 
 
 def get_students_repositories(args, g: github.Github):
-    if args.org_name is not None:
-        try:
-            org = g.get_organization(login=args.org_name)
-            student_repos = list(
-                filter(
-                    lambda repo: args.repo_filter in repo.name,
-                    org.get_repos()
-                )
+    try:
+        org = g.get_organization(login=args.org_name)
+        student_repos = list(
+            filter(
+                lambda repo: args.repo_filter in repo.name,
+                org.get_repos()
             )
-            return student_repos
-        except Exception as e:
-            print(f'Coun\'t get organization: {args.org_name}')
-            print(e)
-            return []
-    elif args.single_student_repository is not None:
-        return [get_repo(args.single_student_repository, g)]
+        )
+        return student_repos
+    except Exception as e:
+        print(e)
+        raise Exception(f'Couldn\'t get organization: {args.org_name}')
 
 
 if __name__ == '__main__':
@@ -103,8 +114,17 @@ if __name__ == '__main__':
             get_files_from_repo(repo=template_repo, path='')
         )
     )
-    for repo in get_students_repositories(args, g):
-        print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
+    if args.as_student_repo_workflow:
+        git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
-            print(f'\tSyncing: {file.path}')
-            copy_file_to_repo(file=file, repo=repo)
+            with open(file.path, 'w') as f:
+                f.write(file.decoded_content)
+        git_repo.index.add(list(map(lambda file: file.path, template_files)))
+        git_repo.index.commit('Auto sync with template repo')
+        git_repo.remote('origin').push()
+    else:
+        for repo in get_students_repositories(args, g):
+            print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
+            for file in template_files:
+                print(f'\tSyncing: {file.path}')
+                copy_file_to_repo(file=file, repo=repo)
