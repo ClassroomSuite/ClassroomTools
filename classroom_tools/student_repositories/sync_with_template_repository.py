@@ -53,9 +53,15 @@ parser.add_argument(
 )
 
 
-def get_files_to_update(files_to_update):
+def get_files_to_update(files_to_update, template_repo):
     if files_to_update is None:
-        pass
+        try:
+            index_file = 'scripts/files_to_update.txt'
+            file = template_repo.get_contents(index_file)
+            return set(file.decoded_content.decode('utf-8').splitlines())
+        except Exception as e:
+            print(e)
+            raise Exception(f'Couldn\'t get file: {index_file}\nfrom template repo: {template_repo.full_name}')
     else:
         return set(files_to_update)
 
@@ -116,16 +122,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.token)
     template_repo = get_repo(args.template_repo_fullname, g)
-    if args.files_to_update is None:
-        try:
-            index_file = 'scripts/files_to_update.txt'
-            file = template_repo.get_contents(index_file)
-            files_to_update = set(file.decoded_content.decode('utf-8').splitlines())
-        except Exception as e:
-            print(e)
-            raise Exception(f'Couldn\'t get file: {index_file}\nfrom template repo: {template_repo.full_name}')
-    else:
-        files_to_update = get_files_to_update(args.files_to_update)
+    files_to_update = get_files_to_update(args.files_to_update, template_repo)
     template_files = list(
         filter(
             lambda file: file.path in files_to_update,
