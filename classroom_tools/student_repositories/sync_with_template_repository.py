@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import git
 import github
@@ -119,7 +120,10 @@ if __name__ == '__main__':
         print(f'\nUpdating files in repo with files from:\t{template_repo.full_name}')
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
-            with open(file.path, 'wb') as f:
+            head, tail = os.path.split(file.path)
+            if not os.path.exists(head):
+                os.makedirs(head)
+            with open(file.name, 'wb') as f:
                 print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
         git_repo.index.add(list(map(lambda file: file.path, template_files)))
