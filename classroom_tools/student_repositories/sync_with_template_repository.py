@@ -126,8 +126,10 @@ if __name__ == '__main__':
             with open(file.name, 'wb') as f:
                 print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
-        git_repo.index.add(list(map(lambda file: args.git_repo_path + file.path, template_files)))
-        git_repo.index.commit('Auto sync with template repo')
+        git_repo.index.add(iter(map(lambda file: args.git_repo_path + file.path, template_files)))
+        commit = git_repo.index.commit('Auto sync with template repo')
+        print(commit)
+        fetch_info = git_repo.remote('origin').pull()
         git_repo.remote('origin').push()
         git_repo.heads.master.log()
     else:
