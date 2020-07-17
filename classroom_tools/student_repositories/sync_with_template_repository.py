@@ -137,9 +137,9 @@ if __name__ == '__main__':
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
             print(f'\tSyncing: {file.path}')
-            head, tail = os.path.split(file.path)
-            if not os.path.exists(head): os.makedirs(head)
             fullpath = os.path.abspath(os.path.join(args.git_repo_path + file.path))
+            head, tail = os.path.split(fullpath)
+            if not os.path.exists(head): os.makedirs(head)
             with open(fullpath, 'wb') as f:
                 f.write(file.decoded_content)
             git_repo.index.add([fullpath])
