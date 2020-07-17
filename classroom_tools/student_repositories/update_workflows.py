@@ -35,6 +35,7 @@ parser.add_argument(
 
 
 def delete_workflow(repo, path):
+    print(f'\t\tRemoving: {path}')
     contents = repo.get_contents(path=path)
     repo.delete_file(
         path=path,
@@ -53,16 +54,32 @@ def delete_all_workflows(repo):
         pass
 
 
-def add_workflow(repo, path):
-    with open(path, 'r') as f:
-        if '.github/workflows/' not in path:
-            head, tail = os.path.split(path)
-            path = '.github/workflows/' + tail
+def get_workflow(src_path):
+    with open(src_path, 'r') as f:
+        content = f.read()
+    if '.github/workflows/' not in src_path:
+        head, tail = os.path.split(src_path)
+        destination_path = '.github/workflows/' + tail
+    return destination_path, content
+
+
+def add_workflow(repo, path, content):
+    print(f'\t\tAdding: {path}')
+    try:
+        old_file = repo.get_contents(path=path)
+        repo.update_file(
+            path=path,
+            message='Auto added workflow',
+            content=content,
+            sha=old_file.sha,
+            branch='master'
+        )
+    except github.UnknownObjectException:
         repo.create_file(
             path=path,
             message='Auto added workflow',
-            content=f.read(),
-            branch='master',
+            content=content,
+            branch='master'
         )
 
 
@@ -70,9 +87,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.TOKEN)
     org = g.get_organization(login=args.org_name)
-    for repo in org.get_repos():
+    print('Updating workflows\n')
+    student_repos = org.get_repos()
+    for repo in student_repos:
         if args.repo_filter in repo.name:
+            print(f'\t{repo.full_name}:')
             if args.delete_previous_workflows:
                 delete_all_workflows(repo)
-            for path in args.new_workflow_files:
-                add_workflow(repo, path=path)
+            for src_path in args.new_workflow_files:
+                destination_path, content = get_workflow(src_path)
+                add_workflow(repo=repo, path=destination_path, content=content)
+    print('\nSummary:')
+    print(f'\tTotal number of repositories updated: {len(student_repos)}')
