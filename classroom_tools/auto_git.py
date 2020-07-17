@@ -5,6 +5,8 @@ import time
 
 import git
 
+DELAY = 30
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--filename',
@@ -15,6 +17,7 @@ parser.add_argument(
 if __name__ == '__main__':
     args = parser.parse_args()
     try:
+        print(f'Syncing every {DELAY} seconds')
         print('Enter CRTL+C to exit process')
         repo_dir = os.path.realpath(os.curdir)
         filename = os.path.join(repo_dir, args.filename)
@@ -34,7 +37,7 @@ if __name__ == '__main__':
             except Exception as e:
                 print(e)
             finally:
-                time.sleep(10)
+                time.sleep(DELAY)
     except KeyboardInterrupt:
         t.cancel()
         print('\nExiting...\n')
