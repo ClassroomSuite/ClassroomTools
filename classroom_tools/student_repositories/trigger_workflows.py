@@ -40,7 +40,7 @@ if __name__ == '__main__':
             status = 'Succes' if success else 'Failed'
             print(f'{status}\t\t{repo.name}')
     print('\nSummary:')
-    print(f'\tTotal number of successful permission changes: {num_success}')
-    print(f'\tTotal number of failed permission changes: {num_fail}')
+    print(f'\tNumber of successful repository_dispatch events: {num_success}')
+    print(f'\tNumber of failed: {num_fail}')
     if num_fail != 0:
         raise Exception('Couldn\'t trigger all workflows')
