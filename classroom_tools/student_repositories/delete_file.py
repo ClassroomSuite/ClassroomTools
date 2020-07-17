@@ -34,6 +34,7 @@ def delete_file(repo, path):
             sha=contents.sha,
             branch='master',
         )
+        print(f'Deleted: {path}\n from: {repo.full_name}')
     except github.UnknownObjectException:
         print(f'File doesn\'t exist: {path}')
 
@@ -42,6 +43,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.TOKEN)
     org = g.get_organization(login=args.org_name)
+    num_repos = 0
     for repo in org.get_repos():
         if args.repo_filter in repo.name:
             delete_file(repo, args.path)
+        num_repos += 1
+    print('\nSummary:')
+    print(f'\tTotal number of repositories updated: {num_repos}')
