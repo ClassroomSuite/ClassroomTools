@@ -15,9 +15,9 @@ parser.add_argument(
 )
 parser.add_argument(
     '--files_to_update',
-    required=True,
     nargs='*',
-    help='List of file paths to copy from template repository to student repositories'
+    help='List of file paths to copy from template repository to student repositories.'
+         'Defaults to file paths specified within files_to_update.txt that is inside the template repo'
 )
 parser.add_argument(
     '--as_student_repo_workflow',
@@ -26,7 +26,7 @@ parser.add_argument(
     type=bool,
     help=
     """
-    If true, template files will be written to the local student repo and git commmands will be used to
+    If true, template files will be written to the local student repo and git commands will be used to
     commit/push changes.
     Otherwise, the GitHub API will be used to create/update the files in all the student repositories
     matching the --repo_filter within --org_name.
