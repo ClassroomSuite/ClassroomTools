@@ -121,12 +121,14 @@ if __name__ == '__main__':
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
             head, tail = os.path.split(file.path)
+            fullpath = os.path.abspath(args.git_repo_path + file.path)
             if not os.path.exists(head):
                 os.makedirs(head)
-            with open(file.name, 'wb') as f:
+            with open(fullpath, 'wb') as f:
                 print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
-        git_repo.index.add(iter(map(lambda file: args.git_repo_path + file.path, template_files)))
+            added = git_repo.index.add([fullpath])
+            print(added)
         commit = git_repo.index.commit('Auto sync with template repo')
         print(commit)
         fetch_info = git_repo.remote('origin').pull()
