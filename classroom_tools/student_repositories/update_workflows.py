@@ -88,8 +88,8 @@ if __name__ == '__main__':
     g = github.Github(login_or_token=args.TOKEN)
     org = g.get_organization(login=args.org_name)
     print('Updating workflows\n')
-    student_repos = org.get_repos()
-    for repo in student_repos:
+    num_repos = 0
+    for repo in org.get_repos():
         if args.repo_filter in repo.name:
             print(f'\t{repo.full_name}:')
             if args.delete_previous_workflows:
@@ -97,5 +97,6 @@ if __name__ == '__main__':
             for src_path in args.new_workflow_files:
                 destination_path, content = get_workflow(src_path)
                 add_workflow(repo=repo, path=destination_path, content=content)
+        num_repos += 1
     print('\nSummary:')
-    print(f'\tTotal number of repositories updated: {len(student_repos)}')
+    print(f'\tTotal number of repositories updated: {num_repos}')
