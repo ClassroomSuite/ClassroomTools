@@ -21,11 +21,11 @@ parser.add_argument(
 )
 parser.add_argument(
     '--as_student_repo_workflow',
-    required=True,
-    type='bool',
+    default=False,
+    action='store_true',
     help=
     """
-    If true, template files will be written to the local student repo and git commands will be used to
+    Template files will be written to the local student repo and git commands will be used to
     commit/push changes.
     Otherwise, the GitHub API will be used to create/update the files in all the student repositories
     matching the --repo_filter within --org_name.
