@@ -126,9 +126,10 @@ if __name__ == '__main__':
             with open(file.name, 'wb') as f:
                 print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
-        git_repo.index.add(list(map(lambda file: file.path, template_files)))
+        git_repo.index.add(list(map(lambda file: args.git_repo_path + file.path, template_files)))
         git_repo.index.commit('Auto sync with template repo')
         git_repo.remote('origin').push()
+        git_repo.heads.master.log()
     else:
         for repo in get_students_repositories(args, g):
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
