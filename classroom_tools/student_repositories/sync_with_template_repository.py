@@ -118,7 +118,7 @@ if __name__ == '__main__':
     if args.as_student_repo_workflow:
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
-            with open(file.path, 'w') as f:
+            with open(file.path, 'wb') as f:
                 print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
         git_repo.index.add(list(map(lambda file: file.path, template_files)))
