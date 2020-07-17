@@ -87,7 +87,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.TOKEN)
     org = g.get_organization(login=args.org_name)
-    print('Updating workflows\n')
+    print('Updating workflows')
     num_repos = 0
     for repo in org.get_repos():
         if args.repo_filter in repo.name:
