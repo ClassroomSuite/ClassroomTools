@@ -133,7 +133,7 @@ if __name__ == '__main__':
         print(commit)
         fetch_info = git_repo.remote('origin').pull()
         git_repo.remote('origin').push()
-        git_repo.heads.master.log()
+        print(git_repo.heads.master.log())
     else:
         for repo in get_students_repositories(args, g):
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
