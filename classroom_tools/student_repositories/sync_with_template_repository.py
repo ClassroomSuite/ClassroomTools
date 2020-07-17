@@ -22,8 +22,7 @@ parser.add_argument(
 parser.add_argument(
     '--as_student_repo_workflow',
     required=True,
-    type=bool,
-    choices=[True, False],
+    type='bool',
     help=
     """
     If true, template files will be written to the local student repo and git commands will be used to
