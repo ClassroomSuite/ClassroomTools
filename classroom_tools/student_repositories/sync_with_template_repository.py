@@ -53,6 +53,13 @@ parser.add_argument(
 )
 
 
+def get_files_to_update(files_to_update):
+    if files_to_update is None:
+        pass
+    else:
+        return set(files_to_update)
+
+
 def get_files_from_repo(repo, path):
     contents = repo.get_contents(path=path)
     for content in contents:
@@ -107,9 +114,18 @@ def get_students_repositories(args, g: github.Github):
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    files_to_update = set(args.files_to_update)
     g = github.Github(login_or_token=args.token)
     template_repo = get_repo(args.template_repo_fullname, g)
+    if args.files_to_update is None:
+        try:
+            index_file = 'scripts/files_to_update.txt'
+            file = template_repo.get_contents(index_file)
+            files_to_update = set(file.decoded_content.decode('utf-8').splitlines())
+        except Exception as e:
+            print(e)
+            raise Exception(f'Couldn\'t get file: {index_file}\nfrom template repo: {template_repo.full_name}')
+    else:
+        files_to_update = get_files_to_update(args.files_to_update)
     template_files = list(
         filter(
             lambda file: file.path in files_to_update,
@@ -120,20 +136,16 @@ if __name__ == '__main__':
         print(f'\nUpdating files in repo with files from:\t{template_repo.full_name}')
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
+            print(f'\tSyncing: {file.path}')
             head, tail = os.path.split(file.path)
-            fullpath = os.path.abspath(args.git_repo_path + file.path)
-            if not os.path.exists(head):
-                os.makedirs(head)
+            if not os.path.exists(head): os.makedirs(head)
+            fullpath = os.path.abspath(os.path.join(args.git_repo_path + file.path))
             with open(fullpath, 'wb') as f:
-                print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
-            added = git_repo.index.add([fullpath])
-            print(added)
-        commit = git_repo.index.commit('Auto sync with template repo')
-        print(commit)
+            git_repo.index.add([fullpath])
+        git_repo.index.commit('Auto sync with template repo')
         fetch_info = git_repo.remote('origin').pull()
         git_repo.remote('origin').push()
-        print(git_repo.heads.master.log())
     else:
         for repo in get_students_repositories(args, g):
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
