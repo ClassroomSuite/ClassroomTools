@@ -116,6 +116,7 @@ if __name__ == '__main__':
         )
     )
     if args.as_student_repo_workflow:
+        print(f'\nUpdating files in repo with files from:\t{template_repo.full_name}')
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
             with open(file.path, 'wb') as f:
