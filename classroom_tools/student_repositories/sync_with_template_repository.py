@@ -13,7 +13,14 @@ parser.add_argument(
     help='Template repo used to create student repositories in format: "Organization/RepositoryName"'
 )
 parser.add_argument(
+    '--files_to_update',
+    required=True,
+    nargs='*',
+    help='List of file paths to copy from template repository to student repositories'
+)
+parser.add_argument(
     '--as_student_repo_workflow',
+    required=True,
     default=True,
     type=bool,
     help=
@@ -42,12 +49,6 @@ parser.add_argument(
 parser.add_argument(
     '--repo_filter',
     help='Prefix to filter repositories for as given assignment or exercise (for multiples student repositories)'
-)
-parser.add_argument(
-    '--files_to_update',
-    required=True,
-    nargs='*',
-    help='List of file paths to copy from template repository to student repositories'
 )
 
 
