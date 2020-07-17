@@ -119,6 +119,7 @@ if __name__ == '__main__':
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
             with open(file.path, 'w') as f:
+                print(f'\tSyncing: {file.path}')
                 f.write(file.decoded_content)
         git_repo.index.add(list(map(lambda file: file.path, template_files)))
         git_repo.index.commit('Auto sync with template repo')
