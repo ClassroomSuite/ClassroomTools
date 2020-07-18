@@ -39,7 +39,7 @@ parser.add_argument(
 
 def save_report(report_name, report_url):
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
-    report_path = f'./reports/{report_name}_{time_str}.html'
+    report_path = f'reports/{report_name}_{time_str}.html'
     head, tail = os.path.split(report_path)
     if not os.path.exists(os.path.abspath(head)): os.makedirs(head)
     moss.saveWebPage(url=report_url, path=report_path)
@@ -67,4 +67,5 @@ if __name__ == '__main__':
                 f.write(content_file.decoded_content)
             moss.addFile(file_path=file_path, display_name=repo.name)
     report_url = moss.send()
+    print(f'Report url: {report_url}')
     save_report(args.report_name, report_url)
