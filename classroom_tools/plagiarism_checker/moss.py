@@ -39,12 +39,14 @@ parser.add_argument(
 
 def save_report(report_name, report_url):
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
-    report_path = f'moss_reports/{report_name}_{time_str}.md'
+    report_path = f'moss_reports/{report_name}_{time_str}.html'
     head, tail = os.path.split(report_path)
     if not os.path.exists(os.path.abspath(head)): os.makedirs(head)
     moss.saveWebPage(url=report_url, path=report_path)
+    root, ext = os.path.splitext(report_path)
+    new_report_path = os.rename(report_path, root + '.md')
     git_repo = git.repo.Repo()
-    git_repo.index.add([report_path])
+    git_repo.index.add([new_report_path])
     git_repo.index.commit(f'Moss report: {report_name}')
     fetch_info = git_repo.remote('origin').pull()
     git_repo.remote('origin').push()
