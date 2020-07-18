@@ -4,6 +4,8 @@ import os
 import git
 import github
 
+from classroom_tools import github_utils
+
 parser = argparse.ArgumentParser(
     description='Update files in student repositories with files from the template repository'
 )
@@ -65,24 +67,6 @@ def get_files_to_update(files_to_update, template_repo):
         return set(files_to_update)
 
 
-def get_files_from_repo(repo, path):
-    contents = repo.get_contents(path=path)
-    for content in contents:
-        if content.type == 'dir':
-            for _content in get_files_from_repo(repo, content.path):
-                yield _content
-        else:
-            yield content
-
-
-def get_repo(fullname, g: github.Github):
-    try:
-        return g.get_repo(full_name_or_id=fullname)
-    except Exception as e:
-        print(e)
-        raise Exception(f'Couldn\'t get repo: {fullname}')
-
-
 def copy_file_to_repo(file, repo):
     try:
         old_file = repo.get_contents(path=file.path)
@@ -102,30 +86,15 @@ def copy_file_to_repo(file, repo):
         )
 
 
-def get_students_repositories(args, g: github.Github):
-    try:
-        org = g.get_organization(login=args.org_name)
-        student_repos = list(
-            filter(
-                lambda repo: args.repo_filter in repo.name,
-                org.get_repos()
-            )
-        )
-        return student_repos
-    except Exception as e:
-        print(e)
-        raise Exception(f'Couldn\'t get organization: {args.org_name}')
-
-
 if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.token)
-    template_repo = get_repo(args.template_repo_fullname, g)
+    template_repo = github_utils.get_repo(args.template_repo_fullname, g)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
     template_files = list(
         filter(
             lambda file: file.path in files_to_update,
-            get_files_from_repo(repo=template_repo, path='')
+            github_utils.get_files_from_repo(repo=template_repo, path='')
         )
     )
     if args.as_student_repo_workflow:
@@ -144,7 +113,7 @@ if __name__ == '__main__':
         git_repo.remote('origin').push()
     else:
         num_repos = 0
-        for repo in get_students_repositories(args, g):
+        for repo in github_utils.get_students_repositories(g=g, org_name=args.org_name, repo_filter=args.repo_filter):
             num_repos += 1
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
             for file in template_files:
