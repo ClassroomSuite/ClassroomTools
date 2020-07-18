@@ -50,6 +50,7 @@ def save_report(report_name, report_url):
     git_repo.index.commit(f'Moss report: {report_name}')
     fetch_info = git_repo.remote('origin').pull()
     git_repo.remote('origin').push()
+    print(f'Report copy located at: {new_report_path}')
 
 
 if __name__ == '__main__':
