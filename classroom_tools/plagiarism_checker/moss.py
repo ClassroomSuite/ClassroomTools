@@ -43,39 +43,16 @@ parser.add_argument(
     '-l',
     default='python',
     choices=mosspy.Moss.languages,
-    help='Moss option: The -l option specifies the source language of the tested programs'
+    help='The -l option specifies the source language of the tested programs'
 )
 parser.add_argument(
     '--base_files_repo_fullname',
-    help='Repo containing base files in format: "Owner/RepoName"'
-)
-parser.add_argument(
-    '-b',
-    action='append',
-    help=
-    """
-    The -b option names a "base file".  Moss normally reports all code
-    that matches in pairs of files.  When a base file is supplied,
-    program code that also appears in the base file is not counted in matches.
-    A typical base file will include, for example, the instructor-supplied 
-    code for an assignment.  Multiple -b options are allowed.  You should 
-    use a base file if it is convenient; base files improve results, but 
-    are not usually necessary for obtaining useful information. 
-    IMPORTANT: Unlike previous versions of moss, the -b option *always*
-    takes a single filename, even if the -d option is also used.
-    
-    Examples:
-        Submit all of the C++ files in the current directory, using skeleton.cc
-    as the base file:
-        moss -l cc -b skeleton.cc *.cc
-    Submit all of the ML programs in directories asn1.96/* and asn1.97/*, where
-    asn1.97/instructor/example.ml and asn1.96/instructor/example.ml contain the base files.
-        moss -l ml -b asn1.97/instructor/example.ml -b asn1.96/instructor/example.ml -d asn1.97/*/*.ml asn1.96/*/*.ml
-    """
+    help='Repo containing base files in format: "Owner/RepoName". All paths specified with --paths will be used as base files paths.'
 )
 parser.add_argument(
     '-d',
-    choices=[0, 1],
+    default=False,
+    action='store_true',
     help=
     """
     The -d option specifies that submissions are by directory, not by file.
@@ -94,6 +71,7 @@ parser.add_argument(
 parser.add_argument(
     '-m',
     default=10,
+    type=int,
     help=
     """
     The -m option sets the maximum number of times a given passage may appear
@@ -132,6 +110,7 @@ parser.add_argument(
 parser.add_argument(
     '-n',
     default=250,
+    type=int,
     help=
     """
     The -n option determines the number of matching files to show in the results.
@@ -144,6 +123,7 @@ parser.add_argument(
 parser.add_argument(
     '-x',
     default=0,
+    type=int,
     help=
     """
     The -x option sends queries to the current experimental version of the server.
@@ -157,17 +137,19 @@ parser.add_argument(
 
 
 def add_base_files(moss: mosspy.Moss, base_files: Iterable, repo: github.Repository.Repository):
+    print(f'Adding base files from repo: {repo.full_name}')
     for path in base_files:
-        print(f'Adding base file: {file_path}')
+        print(f'\t{path}')
         content_file = repo.get_contents(path=path)
-        _, ext = os.path.splitext(path)
-        file_path = f'{repo.name}_{content_file.name}{ext}'
+        head, tail = os.path.split(path)
+        file_path = f'{repo.name}_{tail}'
         with open(file_path, 'wb') as f:
             f.write(content_file.decoded_content)
-        moss.addBaseFile(file_path=file_path, display_name=f'Base file: {file_path}')
+        moss.addBaseFile(file_path=file_path, display_name=file_path)
 
 
 def add_paths(moss: mosspy.Moss, paths: Iterable):
+    print('Adding student files:')
     for path in paths:
         if '*' in path:
             for repo in student_repositories:
@@ -178,20 +160,21 @@ def add_paths(moss: mosspy.Moss, paths: Iterable):
                         f.write(content_file.decoded_content)
                 for file_path in glob.glob(path):
                     head, tail = os.path.split(file_path)
-                    root, ext = os.path.splitext(tail)
-                    new_file_path = f'{head}{repo.name}_{root}{ext}'
+                    new_file_path = f'{head}{repo.name}_{tail}'
                     os.rename(file_path, new_file_path)
-                    moss.addFile(file_path=new_file_path, display_name=f'{repo.name}_{root}{ext}')
+                    moss.addFile(file_path=new_file_path, display_name=f'{repo.name}_{tail}')
+                    print(f'\t\t{tail}')
         else:
             for path in paths:
                 for repo in student_repositories:
                     print(f'\t{repo.name}')
                     content_file = repo.get_contents(path=path)
-                    _, ext = os.path.splitext(path)
-                    file_path = f'{repo.name}_{content_file.name}{ext}'
+                    head, tail = os.path.split(path)
+                    file_path = f'{repo.name}_{tail}'
                     with open(file_path, 'wb') as f:
                         f.write(content_file.decoded_content)
                     moss.addFile(file_path=file_path, display_name=file_path)
+                    print(f'\t\t{tail}')
 
 
 def save_report(report_name, report_url):
@@ -217,16 +200,14 @@ if __name__ == '__main__':
     moss.setIgnoreLimit(args.m)
     moss.setCommentString(args.c)
     moss.setNumberOfMatchingFiles(args.n)
-    moss.setDirectoryMode(args.d)
-    moss.setExperimentalServer(args.x)
+    moss.setExperimentalServer(opt=int(args.x))
+    moss.setDirectoryMode(mode=int(args.d))
     g = github.Github(login_or_token=args.token)
     student_repositories = github_utils.get_students_repositories(g=g, org_name=args.org_name,
                                                                   repo_filter=args.repo_filter)
-    if args.base_files_repo_fullname is not None and args.b is not None:
+    if args.base_files_repo_fullname:
         repo = g.get_repo(full_name_or_id=args.base_files_repo_fullname)
-        add_base_files(moss=moss, base_files=args.b, )
-    elif args.base_files_repo_fullname is not None or args.b is not None:
-        raise parser.error('--base_files_repo_fullname and -b must specified together.')
+        add_base_files(moss=moss, base_files=args.paths, repo=repo)
 
     print(f'Org: {args.org_name}')
     add_paths(moss, args.paths)
