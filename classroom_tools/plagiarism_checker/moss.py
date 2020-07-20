@@ -34,7 +34,8 @@ parser.add_argument(
 )
 parser.add_argument(
     '--base_files_repo_fullname',
-    help='Repo containing base files in format: "Owner/RepoName". All paths specified with --paths will be used as base files paths.'
+    help='Repo containing base files in format: "Owner/RepoName".'
+         'All paths specified with --paths will be used as base files paths.'
 )
 parser.add_argument(
     '--paths',
