@@ -122,8 +122,8 @@ parser.add_argument(
 )
 parser.add_argument(
     '-x',
-    default=0,
-    type=int,
+    default=False,
+    action='store_true',
     help=
     """
     The -x option sends queries to the current experimental version of the server.
