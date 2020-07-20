@@ -196,7 +196,12 @@ def save_report(report_name, report_url):
 
 
 if __name__ == '__main__':
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except Exception as e:
+        print(e)
+        print(parser)
+        raise e
     print(args)
     moss = mosspy.Moss(args.user_id, language=args.l)
     moss.setIgnoreLimit(args.m)
