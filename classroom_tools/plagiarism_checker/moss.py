@@ -33,6 +33,10 @@ parser.add_argument(
     help='Prefix to filter repositories for as given assignment or exercise (for multiples student repositories)'
 )
 parser.add_argument(
+    '--base_files_repo_fullname',
+    help='Repo containing base files in format: "Owner/RepoName". All paths specified with --paths will be used as base files paths.'
+)
+parser.add_argument(
     '--paths',
     default=[],
     nargs='*',
@@ -44,10 +48,6 @@ parser.add_argument(
     default='python',
     choices=mosspy.Moss.languages,
     help='The -l option specifies the source language of the tested programs'
-)
-parser.add_argument(
-    '--base_files_repo_fullname',
-    help='Repo containing base files in format: "Owner/RepoName". All paths specified with --paths will be used as base files paths.'
 )
 parser.add_argument(
     '-d',
