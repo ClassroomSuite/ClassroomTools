@@ -196,6 +196,7 @@ def save_report(report_name, report_url):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    print(args)
     moss = mosspy.Moss(args.user_id, language=args.l)
     moss.setIgnoreLimit(args.m)
     moss.setCommentString(args.c)
@@ -205,7 +206,7 @@ if __name__ == '__main__':
     g = github.Github(login_or_token=args.token)
     student_repositories = github_utils.get_students_repositories(g=g, org_name=args.org_name,
                                                                   repo_filter=args.repo_filter)
-    if args.base_files_repo_fullname:
+    if args.base_files_repo_fullname != '':
         repo = g.get_repo(full_name_or_id=args.base_files_repo_fullname)
         add_base_files(moss=moss, base_files=args.paths, repo=repo)
 
