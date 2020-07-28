@@ -4,7 +4,7 @@ import github
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--TOKEN',
+    '--token',
     required=True,
     help='GitHub personal access token with repo permissions'
 )
@@ -26,7 +26,7 @@ parser.add_argument(
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    g = github.Github(login_or_token=args.TOKEN)
+    g = github.Github(login_or_token=args.token)
     org = g.get_organization(login=args.org_name)
     num_success = 0
     num_fail = 0
