@@ -12,7 +12,6 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     '--template_repo_fullname',
     required=True,
-    default='INF1007-Exercices/TemplateExercise1',
     help='Template repo used to create student repositories in format: "Organization/RepositoryName"'
 )
 parser.add_argument(
