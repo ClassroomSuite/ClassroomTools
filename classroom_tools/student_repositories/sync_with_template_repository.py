@@ -2,7 +2,6 @@ import argparse
 import os
 
 import git
-import github
 
 from classroom_tools import github_utils
 from classroom_tools.exceptions import *
@@ -67,25 +66,6 @@ def get_files_to_update(files_to_update, template_repo):
         return set(files_to_update)
 
 
-def copy_file_to_repo(file, repo):
-    try:
-        old_file = repo.get_contents(path=file.path)
-        repo.update_file(
-            path=file.path,
-            message='Auto sync with template repo',
-            content=file.decoded_content,
-            sha=old_file.sha,
-            branch='master'
-        )
-    except github.UnknownObjectException:
-        repo.create_file(
-            path=file.path,
-            message='Auto sync with template repo',
-            content=file.decoded_content,
-            branch='master'
-        )
-
-
 if __name__ == '__main__':
     args = parser.parse_args()
     template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
@@ -124,6 +104,6 @@ if __name__ == '__main__':
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
             for file in template_files:
                 print(f'\tSyncing: {file.path}')
-                copy_file_to_repo(file=file, repo=repo)
+                github_utils.copy_file_to_repo(file=file, repo=repo)
         print('\nSummary:')
         print(f'\tTotal number of repositories updated: {num_repos}')
