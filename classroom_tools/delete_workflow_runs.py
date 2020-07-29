@@ -56,7 +56,7 @@ if __name__ == '__main__':
         if len(runs) > 1:
             runs.sort(key=lambda run: run.created_at, reverse=True)
             for run in runs[1:]:
-                if args.workflow_names_filter is not None:
+                if args.workflow_name_filter is not None:
                     if args.workflow_name_filter in workflow_name:
                         delete_workflow_run(run.url, args.token)
                 else:
