@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--token',
     required=True,
-    help='GitHub personal access token with admin permissions'
+    help='GitHub personal access token with repo permissions'
 )
 parser.add_argument(
     '--repo_fullname',
@@ -26,7 +26,7 @@ def delete_workflow_run(workflow_url, token):
     print(f'Deleting: {workflow_url}')
     res = requests.delete(url=workflow_url,
                           headers={'Authorization': f'token {token}'})
-    print(f'ok: {res.ok}')
+    print('Success' if res.ok else 'Failed')
 
 
 if __name__ == '__main__':
@@ -37,9 +37,9 @@ if __name__ == '__main__':
     if args.delete_only_failed_runs:
         workflow_runs = list(
             filter(
-                lambda run: run.conclusion == 'failure'
+                lambda run: run.conclusion == 'failure',
+                repo.get_workflow_runs()
             ),
-            repo.get_workflow_runs()
         )
     else:
         workflow_runs = repo.get_workflow_runs()
