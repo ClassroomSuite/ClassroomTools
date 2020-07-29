@@ -37,18 +37,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.token)
     repo = g.get_repo(full_name_or_id=args.repo_fullname)
-    if args.delete_only_failed_runs:
-        workflow_runs = list(
-            filter(
-                lambda run: run.conclusion == 'failure' and run.status == 'completed',
-                repo.get_workflow_runs()
-            ),
-        )
-    else:
-        workflow_runs = list(repo.get_workflow_runs())
 
     workflow_dict = {}
-    for run in workflow_runs:
+    for run in repo.get_workflow_runs():
         workflow_name = repo.get_workflow(id_or_name=str(run.raw_data['workflow_id'])).name
         workflow_dict.setdefault(workflow_name, [])
         workflow_dict[workflow_name].append(run)
