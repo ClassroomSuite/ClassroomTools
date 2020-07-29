@@ -1,7 +1,6 @@
 import argparse
 
-import github
-
+from classroom_tools import github_utils
 from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
@@ -26,31 +25,19 @@ parser.add_argument(
     help='A path to a file delete from students repositories'
 )
 
-
-def delete_file(repo, path):
-    try:
-        contents = repo.get_contents(path=path)
-        repo.delete_file(
-            path=path,
-            message='Deleted file',
-            sha=contents.sha,
-            branch='master',
-        )
-        print(f'Deleted: {path}\n from: {repo.full_name}')
-    except github.UnknownObjectException:
-        print(f'File doesn\'t exist: {path}')
-
-
 if __name__ == '__main__':
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo')
-    g = github.Github(login_or_token=args.token)
-    org = g.get_organization(login=args.org_name)
+    repositories = github_utils.get_students_repositories(
+        token=args.token,
+        org_name=args.org_name,
+        repo_filter=args.repo_filter
+    )
     num_repos = 0
-    for repo in org.get_repos():
+    for repo in repositories:
         if args.repo_filter in repo.name:
-            delete_file(repo, args.path)
+            classroom_tools.github_utils.delete_file(repo, args.path)
         num_repos += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {num_repos}')
