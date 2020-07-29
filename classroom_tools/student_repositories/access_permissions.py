@@ -2,9 +2,11 @@ import argparse
 
 import github
 
+from classroom_tools.exceptions import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--TOKEN',
+    '--token',
     required=True,
     help='GitHub personal access token with repo permissions'
 )
@@ -79,12 +81,11 @@ def apply_changes(args):
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    if args.TOKEN == '':
-        print(f'TOKEN is empty')
+    if args.token == '':
+        raise EmptyToken(permissions='repo')
     try:
         apply_changes(args)
         confirm_changes(args)
     except Exception as e:
-        print('Verify that your personal access token is accessible and has repo permissions')
         print(e)
         exit(1)
