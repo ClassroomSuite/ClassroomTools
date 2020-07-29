@@ -26,9 +26,9 @@ parser.add_argument(
 )
 
 
-def delete_workflow_run(workflow_logs_url, token):
-    print(f'Deleting: {workflow_logs_url}')
-    res = requests.delete(url=workflow_logs_url,
+def delete_workflow_run(workflow_run_url, token):
+    print(f'Deleting: {workflow_run_url}')
+    res = requests.delete(url=workflow_run_url,
                           headers={'Authorization': f'token {token}'})
     print('Success' if res.ok else 'Failed')
 
@@ -50,6 +50,6 @@ if __name__ == '__main__':
         if args.workflow_names_filter is not None:
             workflow = repo.get_workflow(id_or_name=str(run.raw_data['workflow_id']))
             if args.workflow_name_filter in workflow.name:
-                delete_workflow_run(run.logs_url, args.token)
+                delete_workflow_run(run.url, args.token)
         else:
-            delete_workflow_run(run.logs_url, args.token)
+            delete_workflow_run(run.url, args.token)
