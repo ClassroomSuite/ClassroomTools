@@ -42,7 +42,8 @@ parser.add_argument(
 # For workflows outside of student repositories: as_student_repo_workflow=False
 parser.add_argument(
     '--token',
-    help='GitHub personal access token with repo permissions'
+    default='',
+    help='GitHub personal access token with repo and workflow permissions'
 )
 parser.add_argument(
     '--org_name',
@@ -88,17 +89,15 @@ def copy_file_to_repo(file, repo):
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    if args.token == '':
-        raise EmptyToken(permissions='repo')
-    template_repo = github_utils.get_repo(args.template_repo_fullname, g)
-    files_to_update = get_files_to_update(args.files_to_update, template_repo)
-    template_files = list(
-        filter(
-            lambda file: file.path in files_to_update,
-            github_utils.get_files_from_repo(repo=template_repo, path='')
-        )
-    )
     if args.as_student_repo_workflow:
+        template_repo = github_utils.get_repo(args.template_repo_fullname)
+        files_to_update = get_files_to_update(args.files_to_update, template_repo)
+        template_files = list(
+            filter(
+                lambda file: file.path in files_to_update,
+                github_utils.get_files_from_repo(repo=template_repo, path='')
+            )
+        )
         print(f'\nUpdating files in repo with files from:\t{template_repo.full_name}')
         git_repo = git.repo.Repo(path=args.git_repo_path)
         for file in template_files:
@@ -113,6 +112,16 @@ if __name__ == '__main__':
         fetch_info = git_repo.remote('origin').pull()
         git_repo.remote('origin').push()
     else:
+        if args.token == '':
+            raise EmptyToken(permissions='repo, workflow')
+        template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
+        files_to_update = get_files_to_update(args.files_to_update, template_repo)
+        template_files = list(
+            filter(
+                lambda file: file.path in files_to_update,
+                github_utils.get_files_from_repo(repo=template_repo, path='')
+            )
+        )
         num_repos = 0
         repositories = github_utils.get_students_repositories(
             token=args.token,
