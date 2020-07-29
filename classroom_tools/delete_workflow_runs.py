@@ -15,6 +15,10 @@ parser.add_argument(
     help='Repository fullname'
 )
 parser.add_argument(
+    '--workflow_name_filter',
+    help='Delete workflow runs with names that contain this filter'
+)
+parser.add_argument(
     '--delete_only_failed_runs',
     default=False,
     action='store_true',
@@ -33,7 +37,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     g = github.Github(login_or_token=args.token)
     repo = g.get_repo(full_name_or_id=args.repo_fullname)
-
     if args.delete_only_failed_runs:
         workflow_runs = list(
             filter(
@@ -43,5 +46,10 @@ if __name__ == '__main__':
         )
     else:
         workflow_runs = repo.get_workflow_runs()
-    for workflow in repo.get_workflow_runs():
-        delete_workflow_run(workflow.logs_url, args.token)
+    for run in repo.get_workflow_runs():
+        if args.workflow_names_filter is not None:
+            workflow = repo.get_workflow(id_or_name=str(run.raw_data['workflow_id']))
+            if args.workflow_name_filter in workflow.name:
+                delete_workflow_run(run.logs_url, args.token)
+        else:
+            delete_workflow_run(run.logs_url, args.token)
