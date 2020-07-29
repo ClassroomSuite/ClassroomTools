@@ -5,6 +5,7 @@ import git
 import github
 
 from classroom_tools import github_utils
+from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser(
     description='Update files in student repositories with files from the template repository'
@@ -87,6 +88,8 @@ def copy_file_to_repo(file, repo):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    if args.token == '':
+        raise EmptyToken(permissions='repo')
     g = github.Github(login_or_token=args.token)
     template_repo = github_utils.get_repo(args.template_repo_fullname, g)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
