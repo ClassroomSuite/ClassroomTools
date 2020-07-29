@@ -1,7 +1,6 @@
 import argparse
 
-import github
-
+from classroom_tools import github_utils
 from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
@@ -28,24 +27,16 @@ parser.add_argument(
 )
 
 
-def get_repositories(args):
-    g = github.Github(login_or_token=args.TOKEN)
-    org = g.get_organization(login=args.org_name)
-    for repo in org.get_repos():
-        if args.repo_filter in repo.name:
-            yield repo
-
-
-def confirm_changes(args):
+def confirm_changes(repositories, new_permission):
     num_ok = 0
     num_fail = 0
-    for repo in get_repositories(args):
+    for repo in repositories:
         for col in repo.get_collaborators(affiliation='all'):
             if not col.permissions.admin:
-                if col.permissions.pull and args.new_permission_level == 'pull':
+                if col.permissions.pull and new_permission == 'pull':
                     print(f'Permission: pull\t {repo.name}/{col.login}')
                     num_ok += 1
-                elif col.permissions.push and args.new_permission_level == 'push':
+                elif col.permissions.push and new_permission == 'push':
                     print(f'Permission: push\t {repo.name}/{col.login}')
                     num_ok += 1
                 else:
@@ -53,10 +44,10 @@ def confirm_changes(args):
                     print(col.permissions, end='\n\n')
                     num_fail += 1
         for team in repo.get_teams():
-            if team.permission == 'pull' and args.new_permission_level == 'pull':
+            if team.permission == 'pull' and new_permission == 'pull':
                 print(f'Permission: pull\t {team.name}')
                 num_ok += 1
-            elif team.permission == 'push' and args.new_permission_level == 'push':
+            elif team.permission == 'push' and new_permission == 'push':
                 print(f'Permission: push\t {team.name}')
                 num_ok += 1
             else:
@@ -70,13 +61,13 @@ def confirm_changes(args):
         raise Exception('Couldn\'t apply permission changes')
 
 
-def apply_changes(args):
-    for repo in get_repositories(args):
+def apply_changes(repositories, new_permission):
+    for repo in repositories:
         for col in repo.get_collaborators(affiliation='all'):
             if not col.permissions.admin:
-                repo.add_to_collaborators(col, permission=args.new_permission_level)
+                repo.add_to_collaborators(col, permission=new_permission)
         for team in repo.get_teams():
-            team.set_repo_permission(repo=repo, permission=args.new_permission_level)
+            team.set_repo_permission(repo=repo, permission=new_permission)
 
 
 if __name__ == '__main__':
@@ -84,8 +75,13 @@ if __name__ == '__main__':
     if args.token == '':
         raise EmptyToken(permissions='repo')
     try:
-        apply_changes(args)
-        confirm_changes(args)
+        repositories = github_utils.get_students_repositories(
+            token=args.token,
+            org_name=args.org_name,
+            repo_filter=args.repo_filter
+        )
+        apply_changes(repositories=repositories, new_permission=args.new_permission_level)
+        confirm_changes(repositories=repositories, new_permission=args.new_permission_level)
     except Exception as e:
         print(e)
         exit(1)
