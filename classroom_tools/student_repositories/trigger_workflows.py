@@ -1,7 +1,6 @@
 import argparse
 
-import github
-
+from classroom_tools import github_utils
 from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
@@ -30,19 +29,21 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')
-    g = github.Github(login_or_token=args.token)
-    org = g.get_organization(login=args.org_name)
     num_success = 0
     num_fail = 0
-    for repo in org.get_repos():
-        if args.repo_filter in repo.name:
-            success = repo.create_repository_dispatch(event_type=args.event_type)
-            if success:
-                num_success += 1
-            else:
-                num_fail += 1
-            status = 'Succes' if success else 'Failed'
-            print(f'{status}\t\t{repo.name}')
+    repositories = github_utils.get_students_repositories(
+        token=args.token,
+        org_name=args.org_name,
+        repo_filter=args.repo_filter
+    )
+    for repo in repositories:
+        success = repo.create_repository_dispatch(event_type=args.event_type)
+        if success:
+            num_success += 1
+        else:
+            num_fail += 1
+        status = 'Succes' if success else 'Failed'
+        print(f'{status}\t\t{repo.name}')
     print('\nSummary:')
     print(f'\tNumber of successful repository_dispatch events: {num_success}')
     print(f'\tNumber of failed: {num_fail}')
