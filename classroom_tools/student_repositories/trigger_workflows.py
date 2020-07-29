@@ -2,11 +2,13 @@ import argparse
 
 import github
 
+from classroom_tools.exceptions import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--token',
     required=True,
-    help='GitHub personal access token with repo permissions'
+    help='GitHub personal access token with repo and workflow permissions'
 )
 parser.add_argument(
     '--org_name',
@@ -26,6 +28,8 @@ parser.add_argument(
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    if args.token == '':
+        raise EmptyToken(permissions='repo, workflow')
     g = github.Github(login_or_token=args.token)
     org = g.get_organization(login=args.org_name)
     num_success = 0
