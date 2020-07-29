@@ -45,11 +45,19 @@ if __name__ == '__main__':
             ),
         )
     else:
-        workflow_runs = repo.get_workflow_runs()
-    for run in repo.get_workflow_runs():
-        if args.workflow_names_filter is not None:
-            workflow = repo.get_workflow(id_or_name=str(run.raw_data['workflow_id']))
-            if args.workflow_name_filter in workflow.name:
-                delete_workflow_run(run.url, args.token)
-        else:
-            delete_workflow_run(run.url, args.token)
+        workflow_runs = list(repo.get_workflow_runs())
+
+    workflow_dict = {}
+    for run in workflow_runs:
+        workflow_name = repo.get_workflow(id_or_name=str(run.raw_data['workflow_id'])).name
+        workflow_dict.setdefault(workflow_name, [])
+        workflow_dict[workflow_name].append(run)
+    for workflow_name, runs in workflow_dict.items():
+        if len(runs) > 1:
+            runs.sort(key=lambda run: run.created_at, reverse=True)
+            for run in runs[1:]:
+                if args.workflow_names_filter is not None:
+                    if args.workflow_name_filter in workflow_name:
+                        delete_workflow_run(run.url, args.token)
+                else:
+                    delete_workflow_run(run.url, args.token)
