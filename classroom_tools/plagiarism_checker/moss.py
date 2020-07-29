@@ -149,11 +149,11 @@ def add_base_files(moss: mosspy.Moss, base_files: Iterable, repo: github.Reposit
         moss.addBaseFile(file_path=file_path, display_name=file_path)
 
 
-def add_paths(moss: mosspy.Moss, paths: Iterable):
+def add_paths(moss: mosspy.Moss, paths: Iterable, repositories: Iterable):
     print('Adding student files:')
     for path in paths:
         if '*' in path:
-            for repo in student_repositories:
+            for repo in repositories:
                 print(f'\t{repo.name}')
                 content_files = github_utils.get_files_from_repo(repo=repo, path='')
                 for content_file in content_files:
@@ -167,7 +167,7 @@ def add_paths(moss: mosspy.Moss, paths: Iterable):
                     print(f'\t\t{tail}')
         else:
             for path in paths:
-                for repo in student_repositories:
+                for repo in repositories:
                     print(f'\t{repo.name}')
                     content_file = repo.get_contents(path=path)
                     head, tail = os.path.split(path)
@@ -203,15 +203,17 @@ if __name__ == '__main__':
     moss.setNumberOfMatchingFiles(args.n)
     moss.setExperimentalServer(opt=int(args.x))
     moss.setDirectoryMode(mode=int(args.d))
-    g = github.Github(login_or_token=args.token)
-    student_repositories = github_utils.get_students_repositories(g=g, org_name=args.org_name,
-                                                                  repo_filter=args.repo_filter)
+    repositories = github_utils.get_students_repositories(
+        token=args.token,
+        org_name=args.org_name,
+        repo_filter=args.repo_filter
+    )
     if args.base_files_repo_fullname != '':
-        repo = g.get_repo(full_name_or_id=args.base_files_repo_fullname)
+        repo = github_utils.get_repo(fullname=args.base_files_repo_fullname, token=args.token)
         add_base_files(moss=moss, base_files=args.paths, repo=repo)
 
     print(f'Org: {args.org_name}')
-    add_paths(moss, args.paths)
+    add_paths(moss=moss, paths=args.paths, repositories=repositories)
     report_url = moss.send()
     print(f'Report url: {report_url}')
-    save_report(args.report_name, report_url)
+    save_report(report_name=args.report_name, report_url=report_url)
