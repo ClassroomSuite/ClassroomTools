@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     '--template_repo_fullname',
     required=True,
-    help='Template repo used to create student repositories in format: "Organization/RepositoryName"'
+    help='Template repo used to create student repositories in format: OrgName/RepoName'
 )
 parser.add_argument(
     '--files_to_update',
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         num_repos = 0
         repositories = github_utils.get_students_repositories(
             token=args.token,
-            orsg_name=args.org_name,
+            org_name=args.org_name,
             repo_filter=args.repo_filter
         )
         for repo in repositories:
