@@ -3,11 +3,13 @@ import os
 
 import github
 
+from classroom_tools.exceptions import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--TOKEN',
+    '--token',
     required=True,
-    help='GitHub personal access token with repo permissions'
+    help='GitHub personal access token with repo and workflow permissions'
 )
 parser.add_argument(
     '--org_name',
@@ -85,7 +87,9 @@ def add_workflow(repo, path, content):
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    g = github.Github(login_or_token=args.TOKEN)
+    if args.token == '':
+        raise EmptyToken(permissions='repo, workflow')
+    g = github.Github(login_or_token=args.token)
     org = g.get_organization(login=args.org_name)
     print('Updating workflows')
     num_repos = 0
