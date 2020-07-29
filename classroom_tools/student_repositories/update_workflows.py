@@ -38,7 +38,9 @@ if __name__ == '__main__':
     template_workflow_files = []
     if args.template_repo_fullname is not None:
         template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
-        template_workflow_files = github_utils.get_files_from_repo(repo=template_repo, path='.github/workflows/')
+        template_workflow_files = list(
+            github_utils.get_files_from_repo(repo=template_repo, path='.github/workflows/')
+        )
     repositories = github_utils.get_students_repositories(
         token=args.token,
         org_name=args.org_name,
