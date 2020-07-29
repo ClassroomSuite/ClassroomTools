@@ -27,16 +27,18 @@ parser.add_argument(
     help='Delete all workflows from each selected student repositories (to prevent cheating)'
 )
 parser.add_argument(
-    '--new_workflow_files',
-    default=[],
-    nargs='*',
-    help='Paths to %workflow%.yml files to add in students repositories'
+    '--template_repo_fullname',
+    help='Add workflows from template repo used to create student repositories in format: OrgName/RepoName'
 )
 
 if __name__ == '__main__':
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')
+    template_workflow_files = []
+    if args.template_repo_fullname is not None:
+        template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
+        template_workflow_files = github_utils.get_files_from_repo(repo=template_repo, path='.github/workflows/')
     repositories = github_utils.get_students_repositories(
         token=args.token,
         org_name=args.org_name,
@@ -48,9 +50,8 @@ if __name__ == '__main__':
         print(f'\t{repo.full_name}:')
         if args.delete_previous_workflows:
             github_utils.delete_all_workflows(repo)
-        for src_path in args.new_workflow_files:
-            destination_path, content = github_utils.get_workflow(src_path)
-            github_utils.add_workflow(repo=repo, path=destination_path, content=content)
+        for file in template_workflow_files:
+            github_utils.add_workflow(repo=repo, path=file.path, content=file.decoded_content)
         num_repos += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {num_repos}')
