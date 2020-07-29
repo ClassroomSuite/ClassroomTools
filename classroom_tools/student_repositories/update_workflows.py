@@ -1,8 +1,6 @@
 import argparse
-import os
 
-import github
-
+from classroom_tools import github_utils
 from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
@@ -35,72 +33,24 @@ parser.add_argument(
     help='Paths to %workflow%.yml files to add in students repositories'
 )
 
-
-def delete_workflow(repo, path):
-    print(f'\t\tRemoving: {path}')
-    contents = repo.get_contents(path=path)
-    repo.delete_file(
-        path=path,
-        message='Auto deleted workflow',
-        sha=contents.sha,
-        branch='master',
-    )
-
-
-def delete_all_workflows(repo):
-    try:
-        contents = repo.get_contents(path='.github/workflows/')
-        for content_file in contents:
-            delete_workflow(repo, path=content_file.path)
-    except github.UnknownObjectException:
-        pass
-
-
-def get_workflow(src_path):
-    with open(src_path, 'r') as f:
-        content = f.read()
-    if '.github/workflows/' not in src_path:
-        head, tail = os.path.split(src_path)
-        destination_path = '.github/workflows/' + tail
-    return destination_path, content
-
-
-def add_workflow(repo, path, content):
-    print(f'\t\tAdding: {path}')
-    try:
-        old_file = repo.get_contents(path=path)
-        repo.update_file(
-            path=path,
-            message='Auto added workflow',
-            content=content,
-            sha=old_file.sha,
-            branch='master'
-        )
-    except github.UnknownObjectException:
-        repo.create_file(
-            path=path,
-            message='Auto added workflow',
-            content=content,
-            branch='master'
-        )
-
-
 if __name__ == '__main__':
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')
-    g = github.Github(login_or_token=args.token)
-    org = g.get_organization(login=args.org_name)
-    print('Updating workflows')
+    repositories = github_utils.get_students_repositories(
+        token=args.token,
+        org_name=args.org_name,
+        repo_filter=args.repo_filter
+    )
     num_repos = 0
-    for repo in org.get_repos():
-        if args.repo_filter in repo.name:
-            print(f'\t{repo.full_name}:')
-            if args.delete_previous_workflows:
-                delete_all_workflows(repo)
-            for src_path in args.new_workflow_files:
-                destination_path, content = get_workflow(src_path)
-                add_workflow(repo=repo, path=destination_path, content=content)
+    print('Updating workflows')
+    for repo in repositories:
+        print(f'\t{repo.full_name}:')
+        if args.delete_previous_workflows:
+            github_utils.delete_all_workflows(repo)
+        for src_path in args.new_workflow_files:
+            destination_path, content = github_utils.get_workflow(src_path)
+            github_utils.add_workflow(repo=repo, path=destination_path, content=content)
         num_repos += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {num_repos}')
