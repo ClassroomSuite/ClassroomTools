@@ -1,5 +1,3 @@
-import os
-
 import github
 
 
@@ -15,6 +13,25 @@ def delete_file(repo, path):
         print(f'Deleted: {path}\n from: {repo.full_name}')
     except github.UnknownObjectException:
         print(f'File doesn\'t exist: {path}')
+
+
+def copy_file_to_repo(file, repo, message='Auto sync with template repo'):
+    try:
+        old_file = repo.get_contents(path=file.path)
+        repo.update_file(
+            path=file.path,
+            message=message,
+            content=file.decoded_content,
+            sha=old_file.sha,
+            branch='master'
+        )
+    except github.UnknownObjectException:
+        repo.create_file(
+            path=file.path,
+            message=message,
+            content=file.decoded_content,
+            branch='master'
+        )
 
 
 def get_files_from_repo(repo, path):
@@ -70,15 +87,6 @@ def delete_all_workflows(repo):
             delete_workflow(repo, path=content_file.path)
     except github.UnknownObjectException:
         pass
-
-
-def get_workflow(src_path):
-    with open(src_path, 'r') as f:
-        content = f.read()
-    if '.github/workflows/' not in src_path:
-        head, tail = os.path.split(src_path)
-        destination_path = '.github/workflows/' + tail
-    return destination_path, content
 
 
 def add_workflow(repo, path, content):
