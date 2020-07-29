@@ -2,6 +2,8 @@ import argparse
 
 import github
 
+from classroom_tools.exceptions import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--token',
@@ -41,6 +43,8 @@ def delete_file(repo, path):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    if args.token == '':
+        raise EmptyToken(permissions='repo')
     g = github.Github(login_or_token=args.token)
     org = g.get_organization(login=args.org_name)
     num_repos = 0
