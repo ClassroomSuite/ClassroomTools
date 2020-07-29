@@ -90,7 +90,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo')
-    g = github.Github(login_or_token=args.token)
     template_repo = github_utils.get_repo(args.template_repo_fullname, g)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
     template_files = list(
@@ -115,7 +114,12 @@ if __name__ == '__main__':
         git_repo.remote('origin').push()
     else:
         num_repos = 0
-        for repo in github_utils.get_students_repositories(g=g, org_name=args.org_name, repo_filter=args.repo_filter):
+        repositories = github_utils.get_students_repositories(
+            token=args.token,
+            orsg_name=args.org_name,
+            repo_filter=args.repo_filter
+        )
+        for repo in repositories:
             num_repos += 1
             print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
             for file in template_files:
