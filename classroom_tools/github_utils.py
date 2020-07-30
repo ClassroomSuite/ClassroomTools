@@ -18,13 +18,14 @@ def delete_file(repo, path):
 def copy_file_to_repo(file, repo, message='Auto sync with template repo'):
     try:
         old_file = repo.get_contents(path=file.path)
-        repo.update_file(
-            path=file.path,
-            message=message,
-            content=file.decoded_content,
-            sha=old_file.sha,
-            branch='master'
-        )
+        if file.sha != old_file.sha:
+            repo.update_file(
+                path=old_file.path,
+                message=message,
+                content=file.decoded_content,
+                sha=old_file.sha,
+                branch='master'
+            )
     except github.UnknownObjectException:
         repo.create_file(
             path=file.path,
