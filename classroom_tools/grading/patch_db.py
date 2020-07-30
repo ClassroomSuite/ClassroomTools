@@ -44,4 +44,7 @@ if __name__ == '__main__':
             url,
             json=payload
         )
-        print(str(res.text, encoding='utf-8'))
+        if res.ok:
+            print('Success!\n', res.text)
+        else:
+            raise Exception('Failed to patch database')
