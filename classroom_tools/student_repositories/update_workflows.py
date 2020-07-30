@@ -32,9 +32,7 @@ parser.add_argument(
 )
 
 if __name__ == '__main__':
-    msg = 'Updating workflows'
-    padding = (50 - len(msg) // 2) * '#' + ' '
-    print(4 * '\n' + padding + msg + padding[::-1])
+    print('Updating workflows'.center(50, '='))
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')
