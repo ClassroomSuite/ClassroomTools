@@ -40,8 +40,8 @@ if __name__ == '__main__':
                     git_.pull(rebase=True)
                     time.sleep(PULL_DELAY)
                 git_.push()
-            except Exception as e:
-                print(e)
+            except:
+                pass
     except KeyboardInterrupt:
         timer.cancel()
         print('\nExiting...\n')
