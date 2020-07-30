@@ -31,8 +31,8 @@ def add_tests_info(results, tests_associations_file):
 
 if __name__ == '__main__':
     msg = 'Creating grades'
-    padding = 4 * '\n' + (50 - len(msg) // 2) * '#' + ' '
-    print(padding + msg + padding[::-1])
+    padding = (50 - len(msg) // 2) * '#' + ' '
+    print(4 * '\n' + padding + msg + padding[::-1])
     dir_path = os.path.realpath(os.curdir)
     log_file = os.path.join(dir_path, 'logs/tests_results.txt')
     grades_file = os.path.join(dir_path, 'logs/grades.json')
