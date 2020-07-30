@@ -67,7 +67,7 @@ def update_readme(grades, readme_file):
 
 
 if __name__ == '__main__':
-    print('Showing grades in README'.center(50, '='))
+    print('Showing grades in README'.center(80, '='))
     dir_path = os.path.realpath(os.curdir)
     grades_file = os.path.join(dir_path, 'logs/grades.json')
     readme_file = os.path.join(dir_path, 'README.md')
