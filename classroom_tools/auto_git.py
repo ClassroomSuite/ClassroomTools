@@ -5,7 +5,8 @@ import time
 
 import git
 
-DELAY = 30
+PULL_DELAY = 5
+PUSH_DELAY = 30
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -17,7 +18,8 @@ parser.add_argument(
 if __name__ == '__main__':
     args = parser.parse_args()
     try:
-        print(f'Syncing every {DELAY} seconds')
+        print(f'Pulling every {PULL_DELAY} seconds')
+        print(f'Pushing every {PUSH_DELAY} seconds')
         print('Enter CRTL+C to exit process')
         repo_dir = os.path.realpath(os.curdir)
         filename = os.path.join(repo_dir, args.filename)
@@ -28,16 +30,16 @@ if __name__ == '__main__':
         timer.start()
         while not timeout.is_set():
             try:
-                r.index.add([filename])
-                r.index.commit("Auto commit")
-                r.git.stash('save')
-                fetch_info = r.remote('origin').pull()
+                for _ in range(max(PUSH_DELAY//PULL_DELAY, 1)):
+                    r.index.add([filename])
+                    r.index.commit("Auto commit")
+                    r.git.stash('save')
+                    fetch_info = r.remote('origin').pull()
+                    time.sleep(PULL_DELAY)
                 r.remote('origin').push()
                 r.heads.master.log()
             except Exception as e:
                 print(e)
-            finally:
-                time.sleep(DELAY)
     except KeyboardInterrupt:
         timer.cancel()
         print('\nExiting...\n')
