@@ -26,7 +26,7 @@ parser.add_argument(
 )
 
 if __name__ == '__main__':
-    print('Deleting file'.center(50, '='))
+    print('Deleting file'.center(80, '='))
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo')
