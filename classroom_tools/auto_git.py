@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--filename',
     required=True,
-    help='File that will be automatically be added, committed and pushed'
+    help='File that will automatically be added, committed and pushed'
 )
 
 if __name__ == '__main__':
@@ -24,8 +24,8 @@ if __name__ == '__main__':
         r = git.Repo.init(repo_dir)
         timeout = threading.Event()
         timeout.clear()
-        t = threading.Timer(3600 * 3, function=timeout.set)
-        t.start()
+        timer = threading.Timer(3600 * 3, function=timeout.set)
+        timer.start()
         while not timeout.is_set():
             try:
                 r.index.add([filename])
@@ -39,5 +39,5 @@ if __name__ == '__main__':
             finally:
                 time.sleep(DELAY)
     except KeyboardInterrupt:
-        t.cancel()
+        timer.cancel()
         print('\nExiting...\n')
