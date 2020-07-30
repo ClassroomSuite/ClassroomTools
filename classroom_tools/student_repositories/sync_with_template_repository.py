@@ -67,6 +67,10 @@ def get_files_to_update(files_to_update, template_repo):
 
 
 if __name__ == '__main__':
+    msg = 'Sync with template repository'
+    padding = 4 * '\n' + (50 - len(msg) // 2) * '#' + ' '
+    print(padding + msg + padding[::-1])
+    print('\n\n\n\n################################# Sync with template repository #################################\n')
     args = parser.parse_args()
     template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
