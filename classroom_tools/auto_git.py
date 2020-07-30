@@ -5,7 +5,7 @@ import time
 
 import git
 
-PULL_DELAY = 5
+PULL_DELAY = 10
 PUSH_DELAY = 60
 
 parser = argparse.ArgumentParser()
