@@ -32,6 +32,7 @@ if __name__ == '__main__':
             try:
                 for _ in range(max(PUSH_DELAY // PULL_DELAY, 1)):
                     git_.commit(filename, m='Auto commit')
+                    git_.stash('push')
                     git_.pull(rebase=True)
                     time.sleep(PULL_DELAY)
                 git_.push()
