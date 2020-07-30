@@ -31,7 +31,11 @@ if __name__ == '__main__':
         while not timeout.is_set():
             try:
                 for _ in range(max(PUSH_DELAY // PULL_DELAY, 1)):
-                    git_.commit(filename, m='Auto commit')
+                    try:
+                        git_.add(filename)
+                        git_.commit(m='Auto commit')
+                    except git.GitCommandError:
+                        pass
                     git_.stash('push')
                     git_.pull(rebase=True)
                     time.sleep(PULL_DELAY)
