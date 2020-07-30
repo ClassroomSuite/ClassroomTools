@@ -44,4 +44,4 @@ if __name__ == '__main__':
             url,
             json=payload
         )
-        print(res.text.encode('utf-8'))
+        print(str(res.text, encoding='utf-8'))
