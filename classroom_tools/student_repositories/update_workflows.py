@@ -30,6 +30,11 @@ parser.add_argument(
     '--template_repo_fullname',
     help='Add workflows from template repo used to create student repositories in format: OrgName/RepoName'
 )
+parser.add_argument(
+    '--workflow_paths_to_ignore',
+    nargs='*',
+    help='List of workflow file paths to ignore from template repository'
+)
 
 if __name__ == '__main__':
     print('\n\n' + 'Updating workflows'.center(80, '='))
@@ -53,8 +58,10 @@ if __name__ == '__main__':
         print(f'\t{repo.full_name}:')
         if args.delete_previous_workflows:
             github_utils.delete_all_workflows(repo)
+        to_ignore = set(args.workflow_paths_to_ignore)
         for file in template_workflow_files:
-            github_utils.add_workflow(repo=repo, path=file.path, content=file.decoded_content)
+            if file.path not in to_ignore:
+                github_utils.add_workflow(repo=repo, path=file.path, content=file.decoded_content)
         num_repos += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {num_repos}')
