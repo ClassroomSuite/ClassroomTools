@@ -73,7 +73,7 @@ def apply_changes(repositories, new_permission):
 if __name__ == '__main__':
     print('\n\n' + 'Changing access permissions'.center(80, '='))
     args = parser.parse_args()
-    print(f'Args:\n\t{args}')
+    print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     if args.token == '':
         raise EmptyToken(permissions='repo')
     try:

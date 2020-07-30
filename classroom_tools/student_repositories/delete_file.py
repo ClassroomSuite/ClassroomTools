@@ -28,7 +28,7 @@ parser.add_argument(
 if __name__ == '__main__':
     print('\n\n' + 'Deleting file'.center(80, '='))
     args = parser.parse_args()
-    print(f'Args:\n\t{args}')
+    print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     if args.token == '':
         raise EmptyToken(permissions='repo')
     repositories = github_utils.get_students_repositories(

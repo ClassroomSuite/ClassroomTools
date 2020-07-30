@@ -26,7 +26,9 @@ parser.add_argument(
 if __name__ == '__main__':
     print('\n\n' + 'Patching Firebase Realtime DB'.center(80, '='))
     args = parser.parse_args()
-    print(f'Args:\n\t{args}')
+    print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    for k, v in vars(args).items():
+        print(f'\t{k}: {v}')
     dir_path = os.path.realpath(os.curdir)
     print(dir_path)
     grades_file = os.path.join(dir_path, 'logs/grades.json')
