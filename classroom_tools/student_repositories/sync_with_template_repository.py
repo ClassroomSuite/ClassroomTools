@@ -69,6 +69,7 @@ def get_files_to_update(files_to_update, template_repo):
 if __name__ == '__main__':
     print('\n\n' + 'Sync with template repository'.center(80, '='))
     args = parser.parse_args()
+    print(f'Args:\n\t{args}')
     template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
     template_files = list(

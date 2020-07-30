@@ -28,6 +28,7 @@ parser.add_argument(
 if __name__ == '__main__':
     print('\n\n' + 'Deleting file'.center(80, '='))
     args = parser.parse_args()
+    print(f'Args:\n\t{args}')
     if args.token == '':
         raise EmptyToken(permissions='repo')
     repositories = github_utils.get_students_repositories(
@@ -38,7 +39,7 @@ if __name__ == '__main__':
     num_repos = 0
     for repo in repositories:
         if args.repo_filter in repo.name:
-            classroom_tools.github_utils.delete_file(repo, args.path)
+            github_utils.delete_file(repo, args.path)
         num_repos += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {num_repos}')
