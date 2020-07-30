@@ -30,7 +30,7 @@ def add_tests_info(results, tests_associations_file):
 
 
 if __name__ == '__main__':
-    print('\n\nCreating grades'.center(80, '='))
+    print('\n\n' + 'Creating grades'.center(80, '='))
     dir_path = os.path.realpath(os.curdir)
     log_file = os.path.join(dir_path, 'logs/tests_results.txt')
     grades_file = os.path.join(dir_path, 'logs/grades.json')

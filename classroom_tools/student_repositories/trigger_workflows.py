@@ -26,7 +26,7 @@ parser.add_argument(
 )
 
 if __name__ == '__main__':
-    print('\n\nTriggering workflows'.center(80, '='))
+    print('\n\n' + 'Triggering workflows'.center(80, '='))
     args = parser.parse_args()
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')

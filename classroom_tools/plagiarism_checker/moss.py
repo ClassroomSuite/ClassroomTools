@@ -196,7 +196,7 @@ def save_report(report_name, report_url):
 
 
 if __name__ == '__main__':
-    print('\n\nSubmitting files to Moss'.center(80, '='))
+    print('\n\n' + 'Submitting files to Moss'.center(80, '='))
     args = parser.parse_args()
     moss = mosspy.Moss(args.user_id, language=args.l)
     moss.setIgnoreLimit(args.m)
