@@ -24,7 +24,7 @@ parser.add_argument(
 )
 
 if __name__ == '__main__':
-    print('Patching Firebase Realtime DB'.center(50, '='))
+    print('Patching Firebase Realtime DB'.center(80, '='))
     args = parser.parse_args()
     dir_path = os.path.realpath(os.curdir)
     print(dir_path)
