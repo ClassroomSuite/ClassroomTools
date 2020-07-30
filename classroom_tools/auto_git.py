@@ -23,21 +23,18 @@ if __name__ == '__main__':
         print('Enter CRTL+C to exit process')
         repo_dir = os.path.realpath(os.curdir)
         filename = os.path.join(repo_dir, args.filename)
-        r = git.Repo.init(repo_dir)
+        git_ = git.Repo(repo_dir).git
         timeout = threading.Event()
         timeout.clear()
         timer = threading.Timer(3600 * 3, function=timeout.set)
         timer.start()
         while not timeout.is_set():
             try:
-                for _ in range(max(PUSH_DELAY//PULL_DELAY, 1)):
-                    r.index.add([filename])
-                    r.index.commit("Auto commit")
-                    r.git.stash('save')
-                    fetch_info = r.remote('origin').pull()
+                for _ in range(max(PUSH_DELAY // PULL_DELAY, 1)):
+                    git_.commit(filename, m='Auto commit')
+                    git_.pull(rebase=True)
                     time.sleep(PULL_DELAY)
-                r.remote('origin').push()
-                r.heads.master.log()
+                git_.push()
             except Exception as e:
                 print(e)
     except KeyboardInterrupt:
