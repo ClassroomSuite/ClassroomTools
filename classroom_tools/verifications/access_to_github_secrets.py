@@ -92,7 +92,7 @@ def get_required_secrets(token, repo_fullname):
     all_required_secrets = set()
     for file in workflow_files:
         required_secrets = set(find_secrets(str(file.decoded_content)))
-        print(f'Workflow {file.path}\nrequires access to:\n\t' + '\n\t'.join(required_secrets))
+        print(f'Workflow {file.path}\nrequires access to:\n\t' + '\n\t'.join(required_secrets) + '\n')
         all_required_secrets = all_required_secrets.union(required_secrets)
     return all_required_secrets
 
@@ -104,11 +104,11 @@ if __name__ == '__main__':
     required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
     missing = required_secrets.difference(available_secrets)
     print(colorama.Fore.GREEN)
-    print(f'Repo {args.repo_fullname}\nhas access to:\n\t' + '\n\t'.join(available_secrets))
+    print(f'Repo {args.repo_fullname}\nhas access to:\n\t' + '\n\t'.join(available_secrets) + '\n')
     if len(missing) > 0:
         print(colorama.Fore.RED)
-        print(f'Repo {args.repo_fullname}\n doesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
-            missing))
+        print(f'Repo {args.repo_fullname}\ndoesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
+            missing) + '\n')
         print(colorama.Style.RESET_ALL)
         exit(1)
     print(colorama.Style.RESET_ALL)
