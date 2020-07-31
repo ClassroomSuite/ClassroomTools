@@ -4,7 +4,7 @@ import re
 
 import github
 import requests
-from colorama import Fore
+from colorama import Fore, Style
 
 from classroom_tools import github_utils
 
@@ -108,4 +108,6 @@ if __name__ == '__main__':
         print(Fore.RED)
         print(f'Repo {args.repo_fullname}\n doesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
             missing))
+        print(Style.RESET_ALL)
         exit(1)
+    print(Style.RESET_ALL)
