@@ -90,7 +90,7 @@ def get_required_secrets(token, repo_fullname):
     workflow_files = github_utils.get_files_from_repo(repo=repo, path='.github/workflows/')
     all_required_secrets = set()
     for file in workflow_files:
-        required_secrets = set(find_secrets(file.decoded_content))
+        required_secrets = set(find_secrets(str(file.decoded_content)))
         print(f'Workflow {file.path} requires access to:\n\t' + '\n\t'.join(required_secrets))
         all_required_secrets = all_required_secrets.union(required_secrets)
     return all_required_secrets
