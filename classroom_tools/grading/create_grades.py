@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import argparse
 import json
 import os
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--test_associations_path',
+    required=True,
+    default='settings/test_associations.json',
+    help='Path to test_associations.json'
+)
 
 
 def get_tests_results(log_file):
@@ -31,10 +40,12 @@ def add_tests_info(results, tests_associations_file):
 
 if __name__ == '__main__':
     print('\n\n' + 'Creating grades'.center(80, '='))
+    args = parser.parse_args()
+    print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     dir_path = os.path.realpath(os.curdir)
     log_file = os.path.join(dir_path, 'logs/tests_results.txt')
     grades_file = os.path.join(dir_path, 'logs/grades.json')
-    tests_associations_file = os.path.join(dir_path, 'scripts/test_associations.json')
+    tests_associations_file = os.path.join(dir_path, args.test_associations_path)
 
     results = get_tests_results(log_file)
     add_tests_info(results, tests_associations_file)
