@@ -27,11 +27,19 @@ if __name__ == '__main__':
     files_to_update = get_files_to_update(files_to_update=None, template_repo=template_repo)
     print(f'From repository: {template_repo.full_name}')
     missing = []
-    for file in github_utils.get_files_from_repo(repo=template_repo, path=''):
-        if file.path in files_to_update:
-            print(f'{Fore.GREEN}\tFound: {file.path}')
+    repo_files = set(
+        map(
+            lambda file: file.path,
+            github_utils.get_files_from_repo(repo=template_repo, path='')
+        )
+    )
+    for path in files_to_update:
+        if path in repo_files:
+            print(f'{Fore.GREEN}\tFound: {path}')
         else:
-            missing.append(file.path)
+            missing.append(path)
+    for path in repo_files.difference(files_to_update):
+        print(f'{Fore.YELLOW}\tNot included: {path}')
     if len(missing) > 0:
         for path in missing:
             print(f'{Fore.RED}\tMissing: {path}')
