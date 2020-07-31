@@ -105,13 +105,13 @@ if __name__ == '__main__':
     print(
         f'{Fore.GREEN}Repo {args.repo_fullname}\n'
         f'{Fore.GREEN}has access to:\n\t'
-        '\n\t'.join(available_secrets) + '\n'
+        + '\n\t'.join(available_secrets) + '\n'
     )
     if len(missing) > 0:
         print(
             f'{Fore.RED}Repo {args.repo_fullname}\n'
             f'{Fore.RED}doesn\'t have access to the following secrets:\n\t'
-            '\n\t'.join(missing) + '\n'
+            + '\n\t'.join(missing) + '\n'
         )
         print(Style.RESET_ALL)
         exit(1)
