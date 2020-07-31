@@ -8,8 +8,8 @@ def get_tests_results(log_file):
     f = open(log_file)
     results = []
     for line in f.readlines():
-        test_fn_name, right = line.split(' ')
-        if 'ok' in right:
+        test_fn_name, *_ = line.split(' ')
+        if ' ok' in line:
             results.append({'func_name': test_fn_name, 'passing': True})
         else:
             results.append({'func_name': test_fn_name, 'passing': False})
