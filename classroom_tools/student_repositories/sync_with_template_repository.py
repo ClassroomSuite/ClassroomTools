@@ -18,7 +18,7 @@ parser.add_argument(
     '--files_to_update',
     nargs='*',
     help='List of file paths to copy from template repository to student repositories.'
-         'Defaults to file paths specified within files_to_update.txt that is inside the template repo'
+         'Defaults to file paths specified within settings/files_to_update.txt that is inside the template repo'
 )
 parser.add_argument(
     '--as_student_repo_workflow',
@@ -56,7 +56,7 @@ parser.add_argument(
 def get_files_to_update(files_to_update, template_repo):
     if files_to_update is None:
         try:
-            index_file = 'scripts/files_to_update.txt'
+            index_file = 'settings/files_to_update.txt'
             file = template_repo.get_contents(index_file)
             return set(file.decoded_content.decode('utf-8').splitlines())
         except Exception as e:
