@@ -98,7 +98,9 @@ def get_required_secrets(token, repo_fullname):
 
 
 if __name__ == '__main__':
+    print('\n\n' + 'Verifying access to secrets'.center(80, '='))
     args = parser.parse_args()
+    print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
     missing = required_secrets.difference(available_secrets)
