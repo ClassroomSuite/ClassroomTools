@@ -2,9 +2,9 @@ import argparse
 import json
 import re
 
-import colorama
 import github
 import requests
+from colorama import Fore, Style
 
 from classroom_tools import github_utils
 
@@ -98,17 +98,21 @@ def get_required_secrets(token, repo_fullname):
 
 
 if __name__ == '__main__':
-    colorama.init(autoreset=False)
     args = parser.parse_args()
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
     missing = required_secrets.difference(available_secrets)
-    print(colorama.Fore.GREEN)
-    print(f'Repo {args.repo_fullname}\nhas access to:\n\t' + '\n\t'.join(available_secrets) + '\n')
+    print(
+        f'{Fore.GREEN}Repo {args.repo_fullname}\n'
+        f'{Fore.GREEN}has access to:\n\t'
+        '\n\t'.join(available_secrets) + '\n'
+    )
     if len(missing) > 0:
-        print(colorama.Fore.RED)
-        print(f'Repo {args.repo_fullname}\ndoesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
-            missing) + '\n')
-        print(colorama.Style.RESET_ALL)
+        print(
+            f'{Fore.RED}Repo {args.repo_fullname}\n'
+            f'{Fore.RED}doesn\'t have access to the following secrets:\n\t'
+            '\n\t'.join(missing) + '\n'
+        )
+        print(Style.RESET_ALL)
         exit(1)
-    print(colorama.Style.RESET_ALL)
+    print(Style.RESET_ALL)
