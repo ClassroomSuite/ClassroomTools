@@ -4,6 +4,7 @@ import re
 
 import github
 import requests
+from colorama import Fore
 
 from classroom_tools import github_utils
 
@@ -104,5 +105,7 @@ if __name__ == '__main__':
 
     print(f'Repo {args.repo_fullname}\n has access to:\n\t' + '\n\t'.join(available_secrets))
     if len(missing) > 0:
-        print(f'Repo {args.repo_fullname}\n doesn\'t have access to the following secrets:\n\t' + '\n\t'.join(missing))
+        print(
+            Fore.RED + f'Repo {args.repo_fullname}\n doesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
+                missing))
         exit(1)
