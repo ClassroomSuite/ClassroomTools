@@ -11,8 +11,9 @@ def get_tests_results(log_file):
         test_fn_name, *_ = line.split(' ')
         if ' ok' in line:
             results.append({'func_name': test_fn_name, 'passing': True})
-        else:
+        elif ' ERROR' in line or ' FAIL' in line:
             results.append({'func_name': test_fn_name, 'passing': False})
+        else:
             break
     f.close()
     return results
