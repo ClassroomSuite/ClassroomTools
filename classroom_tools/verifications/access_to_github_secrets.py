@@ -51,8 +51,8 @@ def _get_available_org_secrets(token, repo):
                 )
                 if res.ok:
                     repositories = json.JSONDecoder().decode(res.text)['repositories']
-                    for repo in repositories:
-                        if repo['full_name'] == repo.full_name:
+                    for selected_repo in repositories:
+                        if selected_repo['full_name'] == repo.full_name:
                             available_secrets.add(secret['name'])
         return available_secrets
     else:
