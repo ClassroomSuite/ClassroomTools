@@ -102,10 +102,10 @@ if __name__ == '__main__':
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
     missing = required_secrets.difference(available_secrets)
-
-    print(f'Repo {args.repo_fullname}\n has access to:\n\t' + '\n\t'.join(available_secrets))
+    print(Fore.GREEN)
+    print(f'Repo {args.repo_fullname}\nhas access to:\n\t' + '\n\t'.join(available_secrets))
     if len(missing) > 0:
-        print(
-            Fore.RED + f'Repo {args.repo_fullname}\n doesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
-                missing))
+        print(Fore.RED)
+        print(f'Repo {args.repo_fullname}\n doesn\'t have access to the following secrets:\n\t' + '\n\t'.join(
+            missing))
         exit(1)
