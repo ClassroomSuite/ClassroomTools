@@ -42,12 +42,17 @@ if __name__ == '__main__':
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')
-    template_workflow_files = []
     if args.template_repo_fullname is not None:
         template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
         template_workflow_files = list(
             github_utils.get_files_from_repo(repo=template_repo, path='.github/workflows/')
         )
+    else:
+        template_workflow_files = []
+    if args.workflow_paths_to_ignore is not None:
+        to_ignore = set(args.workflow_paths_to_ignore)
+    else:
+        to_ignore = set()
     repositories = github_utils.get_students_repositories(
         token=args.token,
         org_name=args.org_name,
@@ -59,7 +64,6 @@ if __name__ == '__main__':
         print(f'\t{repo.full_name}:')
         if args.delete_previous_workflows:
             github_utils.delete_all_workflows(repo)
-        to_ignore = set(args.workflow_paths_to_ignore)
         for file in template_workflow_files:
             if file.path not in to_ignore:
                 github_utils.add_workflow(repo=repo, path=file.path, content=file.decoded_content)
