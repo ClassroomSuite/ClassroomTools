@@ -6,7 +6,7 @@ from colorama import Fore, Style
 from classroom_tools import github_utils
 from classroom_tools.student_repositories.sync_with_template_repository import get_files_to_update
 
-parser = argparse.ArgumentParser('Verify that a repo has access to the secrets it needs')
+parser = argparse.ArgumentParser('Validate paths specified in files_to_update.txt')
 parser.add_argument(
     '--token',
     required=True,
