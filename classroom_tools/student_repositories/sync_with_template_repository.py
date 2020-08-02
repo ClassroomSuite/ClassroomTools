@@ -66,9 +66,9 @@ def get_files_to_update(files_to_update, template_repo):
         return set(files_to_update)
 
 
-if __name__ == '__main__':
+def main(args):
     print('\n\n' + 'Sync with template repository'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
@@ -109,3 +109,9 @@ if __name__ == '__main__':
                 github_utils.copy_file_to_repo(file=file, repo=repo)
         print('\nSummary:')
         print(f'\tTotal number of repositories updated: {num_repos}')
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
