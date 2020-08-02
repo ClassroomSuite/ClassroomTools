@@ -195,9 +195,9 @@ def save_report(report_name, report_url):
     print(f'Report copy located at: {new_report_path}')
 
 
-if __name__ == '__main__':
+def main(args):
     print('\n\n' + 'Submitting files to Moss'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     moss = mosspy.Moss(args.user_id, language=args.l)
     moss.setIgnoreLimit(args.m)
@@ -219,3 +219,9 @@ if __name__ == '__main__':
     report_url = moss.send()
     print(f'Report url: {report_url}')
     save_report(report_name=args.report_name, report_url=report_url)
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
