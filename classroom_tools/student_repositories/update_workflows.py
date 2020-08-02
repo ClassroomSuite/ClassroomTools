@@ -36,9 +36,10 @@ parser.add_argument(
     help='List of workflow file paths to ignore from template repository'
 )
 
-if __name__ == '__main__':
+
+def main(args):
     print('\n\n' + 'Updating workflows'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     if args.token == '':
         raise EmptyToken(permissions='repo, workflow')
@@ -70,3 +71,9 @@ if __name__ == '__main__':
         num_repos += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {num_repos}')
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
