@@ -23,8 +23,7 @@ def main(args):
     print(f'\nCreating logs/tests_results.txt by running test file: {args.test_file_path}')
     runpy.run_path(
         path_name=args.test_file_path,
-        run_name='__main__',
-        alter_sys=True
+        run_name='__main__'
     )
     print('\nCreating logs/grades.json module: classroom_tools.grading.create_grades')
     classroom_tools.grading.create_grades.main(['--test_associations_path', args.test_associations_path])
