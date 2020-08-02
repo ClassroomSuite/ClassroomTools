@@ -18,9 +18,10 @@ parser.add_argument(
     help='Template repo used to create student repositories in format: OrgName/RepoName'
 )
 
-if __name__ == '__main__':
+
+def main(args):
     print('\n\n' + 'Verifying files_to_update.txt'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     g = github.Github(login_or_token=args.token)
     template_repo = g.get_repo(full_name_or_id=args.template_repo_fullname)
@@ -46,3 +47,9 @@ if __name__ == '__main__':
         exit(1)
 
     print(Style.RESET_ALL)
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
