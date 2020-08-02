@@ -33,9 +33,9 @@ def delete_workflow_run(workflow_run_url, token):
     print('Success' if res.ok else 'Failed')
 
 
-if __name__ == '__main__':
+def main(args):
     print('\n\n' + 'Deleting workflow runs'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     g = github.Github(login_or_token=args.token)
     repo = g.get_repo(full_name_or_id=args.repo_fullname)
@@ -66,3 +66,9 @@ if __name__ == '__main__':
                             delete_workflow_run(run.url, args.token)
                     else:
                         delete_workflow_run(run.url, args.token)
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
