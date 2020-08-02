@@ -55,6 +55,7 @@ def confirm_changes(repositories, new_permission):
                 print(team.permission, end='\n\n')
                 num_fail += 1
     print('\nSummary:')
+    print(f'\tTotal number of repositories: {len(repositories)}')
     print(f'\tTotal number of successful permission changes: {num_ok}')
     print(f'\tTotal number of failed permission changes: {num_fail}')
     if num_fail != 0:
