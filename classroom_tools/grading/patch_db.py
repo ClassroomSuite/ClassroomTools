@@ -23,9 +23,10 @@ parser.add_argument(
     help='GitHub repo name'
 )
 
-if __name__ == '__main__':
+
+def main(args):
     print('\n\n' + 'Patching Firebase Realtime DB'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     dir_path = os.path.realpath(os.curdir)
     grades_file = os.path.join(dir_path, 'logs/grades.json')
@@ -48,3 +49,9 @@ if __name__ == '__main__':
             print('Success!\n', res.text)
         else:
             raise Exception('Failed to patch database')
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
