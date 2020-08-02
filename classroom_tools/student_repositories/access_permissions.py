@@ -70,9 +70,9 @@ def apply_changes(repositories, new_permission):
             team.set_repo_permission(repo=repo, permission=new_permission)
 
 
-if __name__ == '__main__':
+def main(args):
     print('\n\n' + 'Changing access permissions'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     if args.token == '':
         raise EmptyToken(permissions='repo')
@@ -87,3 +87,9 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
         exit(1)
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
