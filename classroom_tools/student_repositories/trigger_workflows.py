@@ -25,7 +25,8 @@ parser.add_argument(
     help='Event name'
 )
 
-if __name__ == '__main__':
+
+def main(args):
     print('\n\n' + 'Triggering workflows'.center(80, '='))
     args = parser.parse_args()
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
@@ -51,3 +52,9 @@ if __name__ == '__main__':
     print(f'\tNumber of failed: {num_fail}')
     if num_fail != 0:
         raise Exception('Couldn\'t trigger all workflows')
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
