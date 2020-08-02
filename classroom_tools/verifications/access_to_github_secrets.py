@@ -97,9 +97,9 @@ def get_required_secrets(token, repo_fullname):
     return all_required_secrets
 
 
-if __name__ == '__main__':
+def main(args):
     print('\n\n' + 'Verifying access to secrets'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
@@ -118,3 +118,9 @@ if __name__ == '__main__':
         print(Style.RESET_ALL)
         exit(1)
     print(Style.RESET_ALL)
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
