@@ -15,8 +15,10 @@ parser.add_argument(
     help='File that will automatically be added, committed and pushed'
 )
 
-if __name__ == '__main__':
-    args = parser.parse_args()
+
+def main(args):
+    args = parser.parse_args(args)
+    print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     try:
         print(f'Pulling every {PULL_DELAY} seconds')
         print(f'Pushing every {PUSH_DELAY} seconds')
@@ -45,3 +47,9 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         timer.cancel()
         print('\nExiting...\n')
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
