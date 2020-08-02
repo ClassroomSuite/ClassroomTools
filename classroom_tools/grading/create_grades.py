@@ -8,7 +8,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--test_associations_path',
     required=True,
-    default='settings/test_associations.json',
     help='Path to test_associations.json'
 )
 
@@ -38,9 +37,9 @@ def add_tests_info(results, tests_associations_file):
     f.close()
 
 
-if __name__ == '__main__':
+def main(args):
     print('\n\n' + 'Creating grades'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     dir_path = os.path.realpath(os.curdir)
     log_file = os.path.join(dir_path, 'logs/tests_results.txt')
@@ -51,3 +50,9 @@ if __name__ == '__main__':
     add_tests_info(results, tests_associations_file)
     with open(grades_file, 'w', encoding='UTF-8') as f:
         json.dump(results, f)
+
+
+if __name__ == '__main__':
+    import sys
+
+    main(sys.argv[1:])
