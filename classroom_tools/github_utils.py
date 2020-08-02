@@ -58,12 +58,17 @@ def get_students_repositories(token, org_name, repo_filter):
     try:
         g = github.Github(login_or_token=token)
         org = g.get_organization(login=org_name)
+        org_repos = org.get_repos()
         student_repos = list(
             filter(
                 lambda repo: repo_filter in repo.name,
-                org.get_repos()
+                org_repos
             )
         )
+        if len(student_repos) == 0:
+            print(f'No repositories matched: {repo_filter}')
+            print(f'Repositories in org: {org_name}')
+            print('\n\t'.join(org_repos))
         return student_repos
     except Exception as e:
         print(e)
