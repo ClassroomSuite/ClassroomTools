@@ -5,16 +5,6 @@ import classroom_tools.grading.create_grades
 
 parser = argparse.ArgumentParser('Validate test_files and test_associations.json')
 parser.add_argument(
-    '--token',
-    required=True,
-    help='GitHub personal access token with repo permissions'
-)
-parser.add_argument(
-    '--template_repo_fullname',
-    required=True,
-    help='Template repo used to create student repositories in format: OrgName/RepoName'
-)
-parser.add_argument(
     '--test_file_path',
     required=True,
     help='Path to test file'
@@ -22,7 +12,6 @@ parser.add_argument(
 parser.add_argument(
     '--test_associations_path',
     required=True,
-    default='settings/test_associations.json',
     help='Path to test_associations.json'
 )
 
