@@ -31,13 +31,14 @@ def confirm_changes(repositories, new_permission):
     num_ok = 0
     num_fail = 0
     for repo in repositories:
+        print(f'Repo: {repo.full_name}')
         for col in repo.get_collaborators(affiliation='all'):
             if not col.permissions.admin:
                 if col.permissions.pull and new_permission == 'pull':
-                    print(f'Permission: pull\t {repo.name}/{col.login}')
+                    print(f'\tPermission: pull\tCollaborator: {col.login}')
                     num_ok += 1
                 elif col.permissions.push and new_permission == 'push':
-                    print(f'Permission: push\t {repo.name}/{col.login}')
+                    print(f'\tPermission: push\tCollaborator: {col.login}')
                     num_ok += 1
                 else:
                     print(f'\nERROR {repo.name}/{col.login}')
@@ -45,10 +46,10 @@ def confirm_changes(repositories, new_permission):
                     num_fail += 1
         for team in repo.get_teams():
             if team.permission == 'pull' and new_permission == 'pull':
-                print(f'Permission: pull\t {team.name}')
+                print(f'\tPermission: pull\tTeam: {team.name}')
                 num_ok += 1
             elif team.permission == 'push' and new_permission == 'push':
-                print(f'Permission: push\t {team.name}')
+                print(f'\tPermission: push\tTeam: {team.name}')
                 num_ok += 1
             else:
                 print(f'\nERROR {team.name}')
