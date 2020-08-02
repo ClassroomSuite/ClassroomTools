@@ -20,13 +20,14 @@ def main(args):
     print('\n\n' + 'Verifying test file and test_associations.json'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
-    print(f'\nCreating logs/tests_results.txt by running test file: {args.test_file_path}')
+    print(f'\nCreating test results by running test file: {args.test_file_path}')
     runpy.run_path(
         path_name=args.test_file_path,
         run_name='__main__'
     )
-    print('\nCreating logs/grades.json module: classroom_tools.grading.create_grades')
+    print(f'\nCreating grades by calling: classroom_tools.grading.create_grades.main')
     classroom_tools.grading.create_grades.main(['--test_associations_path', args.test_associations_path])
+    print('SUCCESS')
 
 
 if __name__ == '__main__':
