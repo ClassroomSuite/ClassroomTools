@@ -1,5 +1,7 @@
 import argparse
 
+from colorama import Fore, Style
+
 from classroom_tools import github_utils
 from classroom_tools.exceptions import *
 
@@ -35,25 +37,20 @@ def confirm_changes(repositories, new_permission):
         for col in repo.get_collaborators(affiliation='all'):
             if not col.permissions.admin:
                 if col.permissions.pull and new_permission == 'pull':
-                    print(f'\tPermission: pull\tCollaborator: {col.login}')
+                    print(f'{Fore.GREEN}\tCollaborator: {col.login}\tPermission: pull')
                     num_ok += 1
                 elif col.permissions.push and new_permission == 'push':
-                    print(f'\tPermission: push\tCollaborator: {col.login}')
+                    print(f'{Fore.GREEN}\tCollaborator: {col.login}\tPermission: push')
                     num_ok += 1
                 else:
-                    print(f'\nERROR {repo.name}/{col.login}')
-                    print(col.permissions, end='\n\n')
+                    print(f'{Fore.RED}\tCollaborator: {col.login}\n{Fore.RED}Permissions: {col.permissions}')
                     num_fail += 1
         for team in repo.get_teams():
-            if team.permission == 'pull' and new_permission == 'pull':
-                print(f'\tPermission: pull\tTeam: {team.name}')
-                num_ok += 1
-            elif team.permission == 'push' and new_permission == 'push':
-                print(f'\tPermission: push\tTeam: {team.name}')
+            if team.permission == new_permission:
+                print(f'{Fore.GREEN}\tTeam: {team.name}\tPermission: {team.permission}')
                 num_ok += 1
             else:
-                print(f'\nERROR {team.name}')
-                print(team.permission, end='\n\n')
+                print(f'{Fore.RED}\tTeam: {team.name}\t Permission: {team.permission}')
                 num_fail += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories: {len(repositories)}')
@@ -95,3 +92,4 @@ if __name__ == '__main__':
     import sys
 
     main(sys.argv[1:])
+    print(Style.RESET_ALL)
