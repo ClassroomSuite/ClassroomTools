@@ -82,7 +82,7 @@ def main(args):
             token=args.token,
             template_repo_fullname=args.template_repo_fullname,
             org_name=args.org_name,
-            repo_name=args.repo_filter + name,
+            repo_name=f'{args.repo_filter}-{name}',
             description='',
             private=False
         )
