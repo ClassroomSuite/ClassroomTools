@@ -1,4 +1,5 @@
 import argparse
+import github
 
 import requests
 from colorama import Fore
@@ -69,7 +70,13 @@ def create_repo_from_template(token, template_repo_fullname, org_name, repo_name
     if res.ok:
         print(f'{Fore.GREEN}Created repo: {repo_name}')
     else:
-        raise Exception(f'Failed to create repo {repo_name}')
+        g = github.Github(login_or_token=token)
+        try:
+            g.get_repo(full_name_or_id=org_name + repo_name)
+            print(f'{Fore.YELLOW}Repo already exists: {repo_name}')
+        except github.UnknownObjectException:
+            print(f'{Fore.RED}Failed to create repo: {repo_name}')
+            raise Exception(res.text)
 
 
 def main(args):
