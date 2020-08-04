@@ -104,22 +104,21 @@ def main(args):
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets, all_required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
     for path, secrets in required_secrets.items():
-        print(f'Workflow {path}\nrequires access to:')
+        print(f'\nWorkflow {path}\nrequires access to:')
         for secret_ in secrets:
             if secret_ in available_secrets:
                 print(f'{Fore.GREEN}\t{secret_}')
             else:
                 print(f'{Fore.RED}\t{secret_}')
-        print('\n')
     print(
-        f'{Fore.GREEN}Repo {args.repo_fullname}\n'
+        f'\n{Fore.GREEN}Repo {args.repo_fullname}\n'
         f'{Fore.GREEN}has access to:\n\t{Fore.GREEN}'
-        + f'\n\t{Fore.GREEN}'.join(available_secrets) + '\n'
+        + f'\n\t{Fore.GREEN}'.join(available_secrets)
     )
     missing = all_required_secrets.difference(available_secrets)
     if len(missing) > 0:
         print(
-            f'{Fore.RED}Repo {args.repo_fullname}\n'
+            f'\n{Fore.RED}Repo {args.repo_fullname}\n'
             f'{Fore.RED}doesn\'t have access to the following secrets:\n\t'
             + '\n\t'.join(missing)
         )
