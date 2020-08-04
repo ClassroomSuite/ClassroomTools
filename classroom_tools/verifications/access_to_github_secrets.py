@@ -110,6 +110,7 @@ def main(args):
                 print(f'{Fore.GREEN}\t{secret_}')
             else:
                 print(f'{Fore.RED}\t{secret_}')
+        print('\n')
     print(
         f'{Fore.GREEN}Repo {args.repo_fullname}\n'
         f'{Fore.GREEN}has access to:\n\t{Fore.GREEN}'
@@ -120,7 +121,7 @@ def main(args):
         print(
             f'{Fore.RED}Repo {args.repo_fullname}\n'
             f'{Fore.RED}doesn\'t have access to the following secrets:\n\t'
-            + '\n\t'.join(missing) + '\n'
+            + '\n\t'.join(missing)
         )
         print(Style.RESET_ALL)
         exit(1)
