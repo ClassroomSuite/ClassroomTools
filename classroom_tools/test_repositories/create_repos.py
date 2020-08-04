@@ -2,7 +2,7 @@ import argparse
 
 import github
 import requests
-from colorama import Fore
+from colorama import Fore, Style
 
 parser = argparse.ArgumentParser('Create test repositories')
 parser.add_argument(
@@ -113,3 +113,4 @@ if __name__ == '__main__':
     import sys
 
     main(sys.argv[1:])
+    print(Style.RESET_ALL)
