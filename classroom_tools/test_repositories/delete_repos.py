@@ -1,5 +1,7 @@
 import argparse
 
+from colorama import Fore, Style
+
 from classroom_tools import github_utils
 
 parser = argparse.ArgumentParser('Create test repositories')
@@ -23,7 +25,7 @@ parser.add_argument(
 def delete_repos(token, org_name, repo_filter):
     repos = github_utils.get_students_repositories(token=token, org_name=org_name, repo_filter=repo_filter)
     for repo in repos:
-        print(f'Deleting: {repo.full_name}')
+        print(f'{Fore.GREEN}Deleting: {repo.full_name}')
         repo.delete()
 
 
@@ -42,3 +44,4 @@ if __name__ == '__main__':
     import sys
 
     main(sys.argv[1:])
+    print(Style.RESET_ALL)
