@@ -178,7 +178,7 @@ def add_paths(moss: mosspy.Moss, paths: Iterable, repositories: Iterable):
                     print(f'\t\t{tail}')
 
 
-def save_report(report_name, report_url):
+def save_report(moss, report_name, report_url):
     time_str = datetime.datetime.now().strftime('%Y-%m-%d_%H%M%S')
     report_path = f'moss_reports/{report_name}_{time_str}.html'
     head, tail = os.path.split(report_path)
@@ -199,6 +199,7 @@ def main(args):
     print('\n\n' + 'Submitting files to Moss'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    github_utils.verify_token(args.token)
     moss = mosspy.Moss(args.user_id, language=args.l)
     moss.setIgnoreLimit(args.m)
     moss.setCommentString(args.c)
@@ -218,7 +219,7 @@ def main(args):
     add_paths(moss=moss, paths=args.paths, repositories=repositories)
     report_url = moss.send()
     print(f'Report url: {report_url}')
-    save_report(report_name=args.report_name, report_url=report_url)
+    save_report(moss=moss, report_name=args.report_name, report_url=report_url)
 
 
 if __name__ == '__main__':

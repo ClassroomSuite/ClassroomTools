@@ -4,7 +4,6 @@ import os
 import git
 
 from classroom_tools import github_utils
-from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser(
     description='Update files in student repositories with files from the template repository'
@@ -93,8 +92,7 @@ def main(args):
         fetch_info = git_repo.remote('origin').pull()
         git_repo.remote('origin').push()
     else:
-        if args.token == '':
-            raise EmptyToken(permissions='repo, workflow')
+        github_utils.verify_token(args.token)
         num_repos = 0
         repositories = github_utils.get_students_repositories(
             token=args.token,

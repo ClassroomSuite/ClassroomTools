@@ -101,6 +101,7 @@ def main(args):
     print('\n\n' + 'Verifying access to secrets'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    github_utils.verify_token(args.token)
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets, all_required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
 

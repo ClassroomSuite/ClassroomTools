@@ -3,6 +3,8 @@ import argparse
 import github
 import requests
 
+from classroom_tools import github_utils
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--token',
@@ -37,6 +39,7 @@ def main(args):
     print('\n\n' + 'Deleting workflow runs'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    github_utils.verify_token(args.token)
     g = github.Github(login_or_token=args.token)
     repo = g.get_repo(full_name_or_id=args.repo_fullname)
 

@@ -3,7 +3,6 @@ import argparse
 from colorama import Fore, Style
 
 from classroom_tools import github_utils
-from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -73,8 +72,7 @@ def main(args):
     print('\n\n' + 'Changing access permissions'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
-    if args.token == '':
-        raise EmptyToken(permissions='repo')
+    github_utils.verify_token(args.token)
     try:
         repositories = github_utils.get_students_repositories(
             token=args.token,

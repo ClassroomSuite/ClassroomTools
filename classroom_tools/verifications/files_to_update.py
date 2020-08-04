@@ -23,6 +23,7 @@ def main(args):
     print('\n\n' + 'Verifying files_to_update.txt'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    github_utils.verify_token(args.token)
     g = github.Github(login_or_token=args.token)
     template_repo = g.get_repo(full_name_or_id=args.template_repo_fullname)
     files_to_update = get_files_to_update(files_to_update=None, template_repo=template_repo)

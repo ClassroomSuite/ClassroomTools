@@ -33,6 +33,7 @@ def main(args):
     print('\n\n' + 'Deleting test repositories'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    github_utils.verify_token(args.token)
     delete_repos(
         token=args.token,
         org_name=args.org_name,

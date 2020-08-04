@@ -1,7 +1,6 @@
 import argparse
 
 from classroom_tools import github_utils
-from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -41,8 +40,7 @@ def main(args):
     print('\n\n' + 'Updating workflows'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
-    if args.token == '':
-        raise EmptyToken(permissions='repo, workflow')
+    github_utils.verify_token(args.token)
     if args.template_repo_fullname is not None:
         template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
         template_workflow_files = list(

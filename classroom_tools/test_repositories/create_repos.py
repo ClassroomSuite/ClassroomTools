@@ -4,6 +4,8 @@ import github
 import requests
 from colorama import Fore, Style
 
+from classroom_tools import github_utils
+
 parser = argparse.ArgumentParser('Create test repositories')
 parser.add_argument(
     '--token',
@@ -90,6 +92,7 @@ def main(args):
     print('\n\n' + 'Creating test repositories'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
+    github_utils.verify_token(args.token)
     usernames = student_usernames(n=args.num_repos)
     g = github.Github(login_or_token=args.token)
     for name in usernames:

@@ -1,7 +1,6 @@
 import argparse
 
 from classroom_tools import github_utils
-from classroom_tools.exceptions import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -30,8 +29,7 @@ def main(args):
     print('\n\n' + 'Deleting file'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
-    if args.token == '':
-        raise EmptyToken(permissions='repo')
+    github_utils.verify_token(args.token)
     repositories = github_utils.get_students_repositories(
         token=args.token,
         org_name=args.org_name,
