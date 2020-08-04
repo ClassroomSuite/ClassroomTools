@@ -103,13 +103,7 @@ def main(args):
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
     required_secrets, all_required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
-    for path, secrets in required_secrets.items():
-        print(f'\nWorkflow {path}\nrequires access to:')
-        for secret_ in secrets:
-            if secret_ in available_secrets:
-                print(f'{Fore.GREEN}\t{secret_}')
-            else:
-                print(f'{Fore.RED}\t{secret_}')
+
     print(
         f'\n{Fore.GREEN}Repo {args.repo_fullname}\n'
         f'{Fore.GREEN}has access to:\n\t{Fore.GREEN}'
@@ -122,7 +116,15 @@ def main(args):
             f'{Fore.RED}doesn\'t have access to the following secrets:\n\t{Fore.RED}'
             + f'\n\t{Fore.RED}'.join(missing)
         )
-        print(Style.RESET_ALL)
+    for path, secrets in required_secrets.items():
+        print(f'\nWorkflow {path}\nrequires access to:')
+        for secret_ in secrets:
+            if secret_ in available_secrets:
+                print(f'{Fore.GREEN}\t{secret_}')
+            else:
+                print(f'{Fore.RED}\t{secret_}')
+    print(Style.RESET_ALL)
+    if len(missing) > 0:
         exit(1)
 
 
@@ -130,4 +132,3 @@ if __name__ == '__main__':
     import sys
 
     main(sys.argv[1:])
-    print(Style.RESET_ALL)
