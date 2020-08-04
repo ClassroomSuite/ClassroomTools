@@ -1,6 +1,6 @@
 import argparse
-import github
 
+import github
 import requests
 from colorama import Fore
 
