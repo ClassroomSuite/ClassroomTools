@@ -6,10 +6,10 @@ def verify_token(token):
     try:
         g = github.Github(login_or_token=token)
         print(
-            f'Authenticated user rate limiting:\n'
+            f'Personal access token rate limiting:\n'
             f'\t{g.rate_limiting[0]} remaining / {g.rate_limiting[1]} requests per hour'
         )
-        print('Permissions (oauth scopes):\n\t' + '\n\t'.join(g.oauth_scopes))
+        print('Personal access token permissions (oauth scopes):\n\t' + '\n\t'.join(g.oauth_scopes))
     except github.BadCredentialsException as e:
         print(f'{Fore.RED}Token expired or not provided')
         print(Style.RESET_ALL)
