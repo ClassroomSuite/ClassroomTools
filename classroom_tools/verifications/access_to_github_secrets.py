@@ -90,11 +90,11 @@ def get_required_secrets(token, repo_fullname):
     repo = g.get_repo(full_name_or_id=repo_fullname)
     workflow_files = github_utils.get_files_from_repo(repo=repo, path='.github/workflows/')
     all_required_secrets = set()
+    required_secrets = {}
     for file in workflow_files:
-        required_secrets = set(find_secrets(str(file.decoded_content)))
-        print(f'Workflow {file.path}\nrequires access to:\n\t' + '\n\t'.join(required_secrets) + '\n')
-        all_required_secrets = all_required_secrets.union(required_secrets)
-    return all_required_secrets
+        required_secrets[file.path] = set(find_secrets(str(file.decoded_content)))
+        all_required_secrets = all_required_secrets.union(required_secrets[file.path])
+    return required_secrets, all_required_secrets
 
 
 def main(args):
@@ -102,13 +102,21 @@ def main(args):
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
-    required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
-    missing = required_secrets.difference(available_secrets)
+    required_secrets, all_required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname,
+                                                                  available_secrets=available_secrets)
+    for path, secrets in required_secrets.items():
+        print(f'Workflow {path}\nrequires access to:')
+        for secret_ in secrets:
+            if secret_ in available_secrets:
+                print(f'{Fore.GREEN}\t{secret_}')
+            else:
+                print(f'{Fore.RED}\t{secret_}')
     print(
         f'{Fore.GREEN}Repo {args.repo_fullname}\n'
-        f'{Fore.GREEN}has access to:\n\t'
-        + '\n\t'.join(available_secrets) + '\n'
+        f'{Fore.GREEN}has access to:\n\t{Fore.GREEN}'
+        + f'\n\t{Fore.GREEN}'.join(available_secrets) + '\n'
     )
+    missing = all_required_secrets.difference(available_secrets)
     if len(missing) > 0:
         print(
             f'{Fore.RED}Repo {args.repo_fullname}\n'
