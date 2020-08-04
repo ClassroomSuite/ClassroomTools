@@ -81,7 +81,7 @@ def get_available_secrets(token, repo_fullname):
     g = github.Github(login_or_token=token)
     repo = g.get_repo(full_name_or_id=repo_fullname)
     org_secrets = _get_available_org_secrets(token=token, repo=repo)
-    repo_secrets = _get_available_org_secrets(token=token, repo=repo)
+    repo_secrets = _get_available_repo_secrets(token=token, repo=repo)
     return org_secrets.union(repo_secrets)
 
 
