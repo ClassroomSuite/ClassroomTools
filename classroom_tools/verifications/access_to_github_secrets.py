@@ -119,8 +119,8 @@ def main(args):
     if len(missing) > 0:
         print(
             f'\n{Fore.RED}Repo {args.repo_fullname}\n'
-            f'{Fore.RED}doesn\'t have access to the following secrets:\n\t'
-            + '\n\t'.join(missing)
+            f'{Fore.RED}doesn\'t have access to the following secrets:\n\t{Fore.RED}'
+            + f'\n\t{Fore.RED}'.join(missing)
         )
         print(Style.RESET_ALL)
         exit(1)
