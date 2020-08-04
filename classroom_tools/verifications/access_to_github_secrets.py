@@ -102,8 +102,7 @@ def main(args):
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     available_secrets = get_available_secrets(token=args.token, repo_fullname=args.repo_fullname)
-    required_secrets, all_required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname,
-                                                                  available_secrets=available_secrets)
+    required_secrets, all_required_secrets = get_required_secrets(token=args.token, repo_fullname=args.repo_fullname)
     for path, secrets in required_secrets.items():
         print(f'Workflow {path}\nrequires access to:')
         for secret_ in secrets:
@@ -125,10 +124,10 @@ def main(args):
         )
         print(Style.RESET_ALL)
         exit(1)
-    print(Style.RESET_ALL)
 
 
 if __name__ == '__main__':
     import sys
 
     main(sys.argv[1:])
+    print(Style.RESET_ALL)
