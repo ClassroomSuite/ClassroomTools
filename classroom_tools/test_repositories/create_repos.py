@@ -4,8 +4,6 @@ import github
 import requests
 from colorama import Fore
 
-from classroom_tools import github_utils
-
 parser = argparse.ArgumentParser('Create test repositories')
 parser.add_argument(
     '--token',
@@ -30,16 +28,25 @@ parser.add_argument(
 parser.add_argument(
     '--num_repos',
     type=int,
+    default=10,
     help='Number of student repositories to create'
+)
+parser.add_argument(
+    '--private',
+    type=bool,
+    default=False,
+    help='Test repositories privacy'
 )
 parser.add_argument(
     '--admin_collaborators',
     nargs='*',
+    default=[],
     help='Collaborator usernames to receive admin access'
 )
 parser.add_argument(
     '--write_collaborators',
     nargs='*',
+    default=[],
     help='Collaborator usernames to receive write access'
 )
 
@@ -72,7 +79,7 @@ def create_repo_from_template(token, template_repo_fullname, org_name, repo_name
     else:
         g = github.Github(login_or_token=token)
         try:
-            g.get_repo(full_name_or_id=org_name + repo_name)
+            g.get_repo(full_name_or_id=f'{org_name}/{repo_name}')
             print(f'{Fore.YELLOW}Repo already exists: {repo_name}')
         except github.UnknownObjectException:
             print(f'{Fore.RED}Failed to create repo: {repo_name}')
@@ -84,21 +91,18 @@ def main(args):
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     usernames = student_usernames(n=args.num_repos)
+    g = github.Github(login_or_token=args.token)
     for name in usernames:
+        repo_name = f'{args.repo_filter}-{name}'
         create_repo_from_template(
             token=args.token,
             template_repo_fullname=args.template_repo_fullname,
             org_name=args.org_name,
-            repo_name=f'{args.repo_filter}-{name}',
-            description='',
-            private=False
+            repo_name=repo_name,
+            description='Repository for testing classroom features at scale',
+            private=args.private
         )
-    test_repos = github_utils.get_students_repositories(
-        token=args.token,
-        org_name=args.org_name,
-        repo_filter=args.repo_filter
-    )
-    for repo in test_repos:
+        repo = g.get_repo(full_name_or_id=f'{args.org_name}/{repo_name}')
         for col in args.admin_collaborators:
             repo.add_to_collaborators(col, permission='admin')
         for col in args.write_collaborators:
