@@ -31,7 +31,7 @@ def main(args):
         repo_filter=args.repo_filter
     )
     for repo in repositories:
-        print(f'Deleting workflows from repo: {repo.full_name}:')
+        print(f'Deleting workflows from repo: {repo.full_name}')
         deleted = github_utils.delete_all_workflows(repo)
         for path in deleted:
             print(f'\tRemoved: {path}')
