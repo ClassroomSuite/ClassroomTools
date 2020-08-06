@@ -1,8 +1,11 @@
 import argparse
 import os
+import random
 import threading
+import time
 
 import git
+import github
 from colorama import Fore
 
 from classroom_tools import github_utils
@@ -124,9 +127,16 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         repo_filter=repo_filter
     )
 
-    def _copy_files(repo, template_files):
+    def _copy_files(repo, template_files, depth=0):
         for file in template_files:
-            github_utils.copy_file_to_repo(file=file, repo=repo)
+            try:
+                github_utils.copy_file_to_repo(file=file, repo=repo)
+            except github.GithubException.RateLimitExceededException:
+                time.sleep(random.randint(30, 90))
+                if depth < 3:
+                    _copy_files(repo, template_files, depth=depth + 1)
+                else:
+                    raise Exception(f'{Fore.RED}FAILED to sync repo: {repo.full_name}')
 
     for repo in repositories:
         threading.Thread(
