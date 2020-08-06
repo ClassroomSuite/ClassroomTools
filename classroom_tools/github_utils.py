@@ -9,7 +9,7 @@ def verify_token(token):
             f'Personal access token rate limiting:\n'
             f'\t{g.rate_limiting[0]} remaining / {g.rate_limiting[1]} requests per hour'
         )
-        print('Personal access token permissions (oauth scopes):\n\t' + '\n\t'.join(g.oauth_scopes))
+        print('Personal access token permissions (oauth scopes):\n\t' + '\n\t'.join(g.oauth_scopes) + '\n')
     except github.BadCredentialsException as e:
         raise Exception(f'{Fore.RED}Token expired or not provided{Style.RESET_ALL}')
 
