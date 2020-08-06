@@ -6,7 +6,7 @@ from colorama import Fore
 
 from classroom_tools import github_utils
 
-parser = argparse.ArgumentParser('Verify that a the repo is a template')
+parser = argparse.ArgumentParser()
 parser.add_argument(
     '--token',
     required=True,
@@ -20,7 +20,7 @@ parser.add_argument(
 
 
 def main(args):
-    print('\n\n' + 'Verifying access to secrets'.center(80, '='))
+    print('\n\n' + 'Verifying that repo is a template'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     github_utils.verify_token(args.token)
