@@ -1,5 +1,6 @@
 import argparse
 import os
+import threading
 
 import git
 from colorama import Fore
@@ -123,12 +124,21 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         repo_filter=repo_filter
     )
     print('Syncing repositories:')
-    for repo in repositories:
+
+    def _copy_files(repo, template_files):
         for file in template_files:
             print(f'\t{repo.full_name}')
             github_utils.copy_file_to_repo(file=file, repo=repo)
+
+    for repo in repositories:
+        threading.Thread(
+            target=_copy_files,
+            args=(repo, template_files)
+        ).start()
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
+    for t in threading.enumerate():
+        t.join()
 
 
 def main(args):
