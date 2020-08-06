@@ -92,7 +92,6 @@ def get_students_repositories(token, org_name, repo_filter):
 
 
 def delete_workflow(repo, path):
-    print(f'\t\tRemoving: {path}')
     contents = repo.get_contents(path=path)
     repo.delete_file(
         path=path,
