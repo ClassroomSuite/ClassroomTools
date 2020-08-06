@@ -1,6 +1,6 @@
 import argparse
 
-from colorama import Fore, Style
+from colorama import Fore
 
 from classroom_tools import github_utils
 
@@ -53,8 +53,7 @@ def main(args):
     print(f'\tNumber of successful repository_dispatch events: {num_success}')
     print(f'\tNumber of failed: {num_fail}')
     if num_fail != 0:
-        raise Exception(f'{Fore.RED}Couldn\'t trigger all workflows{Style.RESET_ALL}')
-    print(Style.RESET_ALL)
+        raise Exception(f'{Fore.RED}Couldn\'t trigger all workflows')
 
 
 if __name__ == '__main__':
