@@ -137,8 +137,6 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         ).start()
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
-    for t in threading.enumerate():
-        t.join()
 
 
 def main(args):
