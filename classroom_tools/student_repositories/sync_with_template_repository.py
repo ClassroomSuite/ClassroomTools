@@ -69,17 +69,24 @@ def _get_paths_to_update(files_to_update, template_repo):
 def get_relevant_template_files(files_to_update, template_repo):
     paths_to_update = _get_paths_to_update(files_to_update=files_to_update, template_repo=template_repo)
     template_files = list(github_utils.get_files_from_repo(repo=template_repo, path=''))
-    relevant = []
-    for file in template_files:
-        if file.path in paths_to_update:
-            relevant.append(file)
-        else:
-            print(f'{Fore.RED}File not found in template repo:\n\t{Fore.RED}{file.path}')
-    print(f'{Fore.GREEN}From template repo: {template_repo.full_name}')
-    print(f'{Fore.GREEN}Files that will be updated')
-    for file in relevant:
-        print(f'{Fore.GREEN}\t{file.path}')
-    return relevant
+    template_paths = set(
+        map(
+            lambda file: file.path,
+            template_files
+        )
+    )
+    relevant_files = list(
+        filter(
+            lambda file: file.path in paths_to_update,
+            template_files
+        )
+    )
+    for path in paths_to_update.difference(template_paths):
+        print(f'{Fore.RED}File not found in template repo:\n\t{Fore.RED}{path}')
+    print(f'{Fore.GREEN}Files that will be updated:')
+    for path in paths_to_update.intersection(template_paths):
+        print(f'{Fore.GREEN}\t{path}')
+    return relevant_files
 
 
 def update_as_student_repo(files_to_update, template_repo_fullname, git_repo_path):
