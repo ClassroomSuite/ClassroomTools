@@ -75,6 +75,10 @@ def get_relevant_template_files(files_to_update, template_repo):
             relevant.append(file)
         else:
             print(f'{Fore.RED}File not found in template repo:\n\t{Fore.RED}{file.path}')
+    print(f'{Fore.GREEN}From template repo: {template_repo.full_name}')
+    print(f'{Fore.GREEN}Files that will be updated')
+    for file in relevant:
+        print(f'{Fore.GREEN}\t{file.path}')
     return relevant
 
 
@@ -112,9 +116,7 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         repo_filter=repo_filter
     )
     for repo in repositories:
-        print(f'\nUpdating files in:\t{repo.full_name}\nwith files from:\t{template_repo.full_name}')
         for file in template_files:
-            print(f'\tSyncing: {file.path}')
             github_utils.copy_file_to_repo(file=file, repo=repo)
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
