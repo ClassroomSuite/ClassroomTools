@@ -68,13 +68,13 @@ def _get_paths_to_update(files_to_update, template_repo):
 
 def get_relevant_template_files(files_to_update, template_repo):
     paths_to_update = _get_paths_to_update(files_to_update=files_to_update, template_repo=template_repo)
-    template_files = set(github_utils.get_files_from_repo(repo=template_repo, path=''))
-    relevant = set()
+    template_files = list(github_utils.get_files_from_repo(repo=template_repo, path=''))
+    relevant = []
     for file in template_files:
         if file.path in paths_to_update:
-            relevant.add(file)
+            relevant.append(file)
         else:
-            print(f'{Fore.RED}File not found in template repo:\n\t{Fore.RED}{file}')
+            print(f'{Fore.RED}File not found in template repo:\n\t{Fore.RED}{file.path}')
     return relevant
 
 
