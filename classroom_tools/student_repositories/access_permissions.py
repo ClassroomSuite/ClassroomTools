@@ -1,6 +1,6 @@
 import argparse
 
-from colorama import Fore, Style
+from colorama import Fore
 
 from classroom_tools import github_utils
 
@@ -55,8 +55,8 @@ def confirm_changes(repositories, new_permission):
     print(f'\tTotal number of repositories: {len(repositories)}')
     print(f'\tTotal number of successful permission changes: {num_ok}')
     print(f'\tTotal number of failed permission changes: {num_fail}')
-    if num_fail != 0:
-        raise Exception('Couldn\'t apply permission changes')
+    if num_fail > 0:
+        raise Exception(f'{Fore.RED}Couldn\'t apply permission changes')
 
 
 def apply_changes(repositories, new_permission):
@@ -73,21 +73,16 @@ def main(args):
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     github_utils.verify_token(args.token)
-    try:
-        repositories = github_utils.get_students_repositories(
-            token=args.token,
-            org_name=args.org_name,
-            repo_filter=args.repo_filter
-        )
-        apply_changes(repositories=repositories, new_permission=args.new_permission_level)
-        confirm_changes(repositories=repositories, new_permission=args.new_permission_level)
-    except Exception as e:
-        print(e)
-        exit(1)
+    repositories = github_utils.get_students_repositories(
+        token=args.token,
+        org_name=args.org_name,
+        repo_filter=args.repo_filter
+    )
+    apply_changes(repositories=repositories, new_permission=args.new_permission_level)
+    confirm_changes(repositories=repositories, new_permission=args.new_permission_level)
 
 
 if __name__ == '__main__':
     import sys
 
     main(sys.argv[1:])
-    print(Style.RESET_ALL)
