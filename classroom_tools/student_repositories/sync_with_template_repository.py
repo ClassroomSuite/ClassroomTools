@@ -2,7 +2,7 @@ import argparse
 import os
 
 import git
-from colorama import Fore, Style
+from colorama import Fore
 
 from classroom_tools import github_utils
 
@@ -110,7 +110,6 @@ def main(args):
                 github_utils.copy_file_to_repo(file=file, repo=repo)
         print('\nSummary:')
         print(f'\tTotal number of repositories updated: {num_repos}')
-        print(Style.RESET_ALL)
 
 
 if __name__ == '__main__':
