@@ -123,11 +123,9 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         org_name=org_name,
         repo_filter=repo_filter
     )
-    print('Syncing repositories:')
 
     def _copy_files(repo, template_files):
         for file in template_files:
-            print(f'\t{repo.full_name}')
             github_utils.copy_file_to_repo(file=file, repo=repo)
 
     for repo in repositories:
@@ -135,6 +133,9 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
             target=_copy_files,
             args=(repo, template_files)
         ).start()
+    print('Syncing repositories:')
+    for repo in repositories:
+        print(f'\t{repo.full_name}')
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
 
