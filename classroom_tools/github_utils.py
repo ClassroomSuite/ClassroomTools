@@ -73,25 +73,24 @@ def get_students_repositories(token, org_name, repo_filter):
     try:
         g = github.Github(login_or_token=token)
         org = g.get_organization(login=org_name)
-        org_repos = list(org.get_repos())
-        student_repos = list(
-            filter(
-                lambda repo: repo_filter in repo.name,
-                org_repos
-            )
+    except github.GithubException as e:
+        print(f'{Fore.RED}Couldn\'t get organization: {org_name}')
+        raise e
+    org_repos = list(org.get_repos())
+    student_repos = list(
+        filter(
+            lambda repo: repo_filter in repo.name,
+            org_repos
         )
-        if len(student_repos) == 0:
-            print(f'No repositories matched: {repo_filter}')
-            if len(org_repos) == 0:
-                print(f'Org has no repositories: {org_name}')
-            else:
-                print(f'Here are the repositories in org: {org_name}')
-                for repo in org_repos:
-                    print(f'\t{repo.name}')
-        return student_repos
-    except Exception as e:
-        print(e)
-        raise Exception(f'Couldn\'t get organization: {org_name}')
+    )
+    if len(org_repos) == 0:
+        raise Exception(f'{Fore.RED}Org has no repositories: {org_name}')
+    elif len(student_repos) == 0:
+        print(f'{Fore.YELLOW}Here are the repositories in org: {org_name}')
+        for repo in org_repos:
+            print(f'{Fore.YELLOW}\t{repo.name}')
+        raise Exception(f'{Fore.RED}No repositories matched: {repo_filter}')
+    return student_repos
 
 
 def delete_workflow(repo, path):
