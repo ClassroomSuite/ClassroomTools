@@ -2,6 +2,7 @@ import argparse
 import os
 
 import git
+from colorama import Fore, Style
 
 from classroom_tools import github_utils
 
@@ -71,12 +72,14 @@ def main(args):
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     template_repo = github_utils.get_repo(args.template_repo_fullname, args.token)
     files_to_update = get_files_to_update(args.files_to_update, template_repo)
-    template_files = list(
+    template_files = set(
         filter(
             lambda file: file.path in files_to_update,
             github_utils.get_files_from_repo(repo=template_repo, path='')
         )
     )
+    for file in files_to_update.difference(template_files):
+        print(f'{Fore.RED}File not found in template repo:\n\t{Fore.RED}{file}')
     if args.as_student_repo_workflow:
         print(f'\nUpdating files in repo with files from:\t{template_repo.full_name}')
         git_repo = git.repo.Repo(path=args.git_repo_path)
@@ -107,6 +110,7 @@ def main(args):
                 github_utils.copy_file_to_repo(file=file, repo=repo)
         print('\nSummary:')
         print(f'\tTotal number of repositories updated: {num_repos}')
+        print(Style.RESET_ALL)
 
 
 if __name__ == '__main__':
