@@ -1,5 +1,7 @@
 import argparse
 
+from colorama import Fore, Style
+
 from classroom_tools import github_utils
 
 parser = argparse.ArgumentParser()
@@ -27,7 +29,7 @@ parser.add_argument(
 
 def main(args):
     print('\n\n' + 'Triggering workflows'.center(80, '='))
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     github_utils.verify_token(args.token)
     num_success = 0
@@ -37,19 +39,22 @@ def main(args):
         org_name=args.org_name,
         repo_filter=args.repo_filter
     )
+    print('Triggering workflows in repos:')
     for repo in repositories:
         success = repo.create_repository_dispatch(event_type=args.event_type)
         if success:
             num_success += 1
+            print(f'{Fore.GREEN}\t{repo.name}')
         else:
             num_fail += 1
-        status = 'Succes' if success else 'Failed'
-        print(f'{status}\t\t{repo.name}')
+            print(f'{Fore.RED}\tFAILED {repo.name}')
+
     print('\nSummary:')
     print(f'\tNumber of successful repository_dispatch events: {num_success}')
     print(f'\tNumber of failed: {num_fail}')
     if num_fail != 0:
-        raise Exception('Couldn\'t trigger all workflows')
+        raise Exception(f'{Fore.RED}Couldn\'t trigger all workflows{Style.RESET_ALL}')
+    print(Style.RESET_ALL)
 
 
 if __name__ == '__main__':
