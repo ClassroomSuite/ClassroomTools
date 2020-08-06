@@ -1,11 +1,7 @@
 import argparse
 import os
-import random
-import threading
-import time
 
 import git
-import github
 from colorama import Fore
 
 from classroom_tools import github_utils
@@ -127,29 +123,11 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         repo_filter=repo_filter
     )
 
-    def _copy_files(repo_it, template_files, depth=0):
-        for repo in repo_it:
-            for file in template_files:
-                try:
-                    time.sleep(random.randint(0, 30))
-                    github_utils.copy_file_to_repo(file=file, repo=repo)
-                except github.RateLimitExceededException:
-                    time.sleep(random.randint(30, 90))
-                    if depth < 3:
-                        _copy_files(repo, template_files, depth=depth + 1)
-                    else:
-                        raise Exception(f'{Fore.RED}FAILED to sync repo: {repo.full_name}')
-
-    num_workers = 5
-    for i in range(num_workers):
-        repo_it = repositories[i::num_workers] if len(repositories) < num_workers else repositories
-        threading.Thread(
-            target=_copy_files,
-            args=(repo_it, template_files)
-        ).start()
     print('Syncing repositories:')
     for repo in repositories:
         print(f'{Fore.GREEN}\t{repo.full_name}')
+        for file in template_files:
+            github_utils.copy_file_to_repo(file=file, repo=repo)
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
 
