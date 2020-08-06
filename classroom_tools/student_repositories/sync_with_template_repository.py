@@ -135,7 +135,7 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         ).start()
     print('Syncing repositories:')
     for repo in repositories:
-        print(f'\t{repo.full_name}')
+        print(f'{Fore.GREEN}\t{repo.full_name}')
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
 
