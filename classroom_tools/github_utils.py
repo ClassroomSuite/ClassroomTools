@@ -85,8 +85,9 @@ def get_students_repositories(token, org_name, repo_filter):
             if len(org_repos) == 0:
                 print(f'Org has no repositories: {org_name}')
             else:
-                print(f'Repositories in org: {org_name}')
-                print('\n\t'.join(org_repos))
+                print(f'Here are the repositories in org: {org_name}')
+                for repo in org_repos:
+                    print(f'\t{repo.name}')
         return student_repos
     except Exception as e:
         print(e)
