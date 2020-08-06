@@ -1,4 +1,5 @@
 import argparse
+import itertools
 import os
 import random
 import threading
@@ -127,21 +128,23 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
         repo_filter=repo_filter
     )
 
-    def _copy_files(repo, template_files, depth=0):
-        for file in template_files:
-            try:
-                github_utils.copy_file_to_repo(file=file, repo=repo)
-            except github.GithubException.RateLimitExceededException:
-                time.sleep(random.randint(30, 90))
-                if depth < 3:
-                    _copy_files(repo, template_files, depth=depth + 1)
-                else:
-                    raise Exception(f'{Fore.RED}FAILED to sync repo: {repo.full_name}')
+    def _copy_files(repo_it, template_files, depth=0):
+        for repo in repo_it:
+            for file in template_files:
+                try:
+                    time.sleep(random.randint(0, 30))
+                    github_utils.copy_file_to_repo(file=file, repo=repo)
+                except github.RateLimitExceededException:
+                    time.sleep(random.randint(30, 90))
+                    if depth < 3:
+                        _copy_files(repo, template_files, depth=depth + 1)
+                    else:
+                        raise Exception(f'{Fore.RED}FAILED to sync repo: {repo.full_name}')
 
-    for repo in repositories:
+    for repo_it in itertools.tee(repositories, n=10):
         threading.Thread(
             target=_copy_files,
-            args=(repo, template_files)
+            args=(repo_it, template_files)
         ).start()
     print('Syncing repositories:')
     for repo in repositories:
