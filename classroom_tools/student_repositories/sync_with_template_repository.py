@@ -141,7 +141,7 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
                     else:
                         raise Exception(f'{Fore.RED}FAILED to sync repo: {repo.full_name}')
 
-    for repo_it in itertools.tee(repositories, n=10):
+    for repo_it in itertools.tee(repositories, 10):
         threading.Thread(
             target=_copy_files,
             args=(repo_it, template_files)
