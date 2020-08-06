@@ -11,9 +11,7 @@ def verify_token(token):
         )
         print('Personal access token permissions (oauth scopes):\n\t' + '\n\t'.join(g.oauth_scopes))
     except github.BadCredentialsException as e:
-        print(f'{Fore.RED}Token expired or not provided')
-        print(Style.RESET_ALL)
-        raise e
+        raise Exception(f'{Fore.RED}Token expired or not provided{Style.RESET_ALL}')
 
 
 def delete_file(repo, path):
