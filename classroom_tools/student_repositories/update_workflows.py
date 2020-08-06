@@ -58,7 +58,6 @@ def main(args):
         repo_filter=args.repo_filter
     )
     num_repos = 0
-    print('Updating workflows')
     for repo in repositories:
         print(f'\t{repo.full_name}:')
         if args.delete_previous_workflows:
