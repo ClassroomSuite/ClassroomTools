@@ -1,5 +1,4 @@
 import argparse
-import itertools
 import os
 import random
 import threading
@@ -141,7 +140,9 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
                     else:
                         raise Exception(f'{Fore.RED}FAILED to sync repo: {repo.full_name}')
 
-    for repo_it in itertools.tee(repositories, 10):
+    num_workers = 5
+    for i in range(num_workers):
+        repo_it = repositories[i::num_workers] if len(repositories) < num_workers else repositories
         threading.Thread(
             target=_copy_files,
             args=(repo_it, template_files)
