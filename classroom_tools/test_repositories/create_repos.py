@@ -39,18 +39,6 @@ parser.add_argument(
     default=False,
     help='Test repositories privacy'
 )
-parser.add_argument(
-    '--admin_collaborators',
-    nargs='*',
-    default=[],
-    help='Collaborator usernames to receive admin access'
-)
-parser.add_argument(
-    '--write_collaborators',
-    nargs='*',
-    default=[],
-    help='Collaborator usernames to receive write access'
-)
 
 
 def student_usernames(n=10):
@@ -94,7 +82,6 @@ def main(args):
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     github_utils.verify_token(args.token)
     usernames = student_usernames(n=args.num_repos)
-    g = github.Github(login_or_token=args.token)
     for name in usernames:
         repo_name = f'{args.repo_filter}-{name}'
         create_repo_from_template(
@@ -105,11 +92,6 @@ def main(args):
             description='Repository for testing classroom features at scale',
             private=args.private
         )
-        repo = g.get_repo(full_name_or_id=f'{args.org_name}/{repo_name}')
-        for col in args.admin_collaborators:
-            repo.add_to_collaborators(col, permission='admin')
-        for col in args.write_collaborators:
-            repo.add_to_collaborators(col, permission='push')
 
 
 if __name__ == '__main__':
