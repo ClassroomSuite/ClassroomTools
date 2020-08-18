@@ -31,7 +31,6 @@ parser.add_argument(
 def create_or_update_ref(repo, branch_name):
     master_branch = repo.get_branch('master')
     try:
-        repo.get_branch(branch_name)
         ref = repo.get_git_ref(f'heads/{branch_name}')
         ref.edit(master_branch.commit.sha, force=True)
     except:
