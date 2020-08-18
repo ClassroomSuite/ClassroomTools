@@ -65,7 +65,7 @@ def main(args):
             num_fail += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories: {len(repositories)}')
-    print(f'\tTotal number of failed: {num_fail}')
+    print(f'\tTotal number failed: {num_fail}')
     if num_fail > 0:
         raise Exception(f'{Fore.RED}Couldn\'t create protected branches')
 
