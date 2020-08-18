@@ -79,6 +79,9 @@ def main(args):
         try:
             create_or_update_ref(repo=repo, base=args.base)
             add_push_restrictions(repo=repo, base=args.base)
+        except:
+            num_fail += 1
+        try:
             repo.create_pull(
                 title=args.pull_request_title,
                 body=args.pull_request_body,
@@ -88,10 +91,10 @@ def main(args):
                 draft=False
             )
         except:
-            num_fail += 1
+            print(f'\t{Fore.RED}Pull request already exists')
     print('\nSummary:')
     print(f'\tTotal number of repositories: {len(repositories)}')
-    print(f'\tTotal number of failed: {num_fail}')
+    print(f'\tTotal number failed: {num_fail}')
     if num_fail > 0:
         raise Exception(f'{Fore.RED}Couldn\'t create protected branches')
 
