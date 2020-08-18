@@ -43,14 +43,18 @@ parser.add_argument(
 )
 
 
-def create_or_update_ref(repo, base):
-    commit = repo.get_branch('master').commit
+def get_first_commit(repo, branch_name='master'):
+    commit = repo.get_branch(branch_name).commit
     while len(commit.parents) > 0:
         commit = commit.parents[0]
+    return commit
+
+
+def create_or_update_ref(repo, base):
+    commit = get_first_commit(repo)
     try:
-        repo.get_branch(base)
         ref = repo.get_git_ref(f'heads/{base}')
-        ref.edit(commit.sha, force=True)
+        ref.edit(sha=commit.sha, force=True)
     except:
         repo.create_git_ref(f'refs/heads/{base}', sha=commit.sha)
 
