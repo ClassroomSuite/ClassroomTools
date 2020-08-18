@@ -90,8 +90,11 @@ def main(args):
                 maintainer_can_modify=False,
                 draft=False
             )
-        except:
+        except Exception as e:
             print(f'\t{Fore.RED}Pull request already exists')
+            for pull in repo.get_pulls():
+                print(f'\t{pull}')
+            print(e)
     print('\nSummary:')
     print(f'\tTotal number of repositories: {len(repositories)}')
     print(f'\tTotal number failed: {num_fail}')
