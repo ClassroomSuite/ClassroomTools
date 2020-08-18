@@ -53,6 +53,8 @@ def get_first_commit(repo, branch_name='master'):
 def create_or_update_ref(repo, base):
     commit = get_first_commit(repo)
     try:
+        branch = repo.get_branch(base)
+        branch.remove_protection()
         ref = repo.get_git_ref(f'heads/{base}')
         ref.edit(sha=commit.sha, force=True)
     except:
