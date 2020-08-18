@@ -44,7 +44,6 @@ parser.add_argument(
 
 
 def create_or_update_ref(repo, base):
-    master_branch = repo.get_branch('master')
     commit = repo.get_branch('master').commit
     while len(commit.parents) > 0:
         commit = commit.parents[0]
@@ -53,7 +52,7 @@ def create_or_update_ref(repo, base):
         ref = repo.get_git_ref(f'heads/{base}')
         ref.edit(commit.sha, force=True)
     except:
-        repo.create_git_ref(f'refs/heads/{base}', sha=master_branch.commit.sha)
+        repo.create_git_ref(f'refs/heads/{base}', sha=commit.sha)
 
 
 def add_push_restrictions(repo, base):
