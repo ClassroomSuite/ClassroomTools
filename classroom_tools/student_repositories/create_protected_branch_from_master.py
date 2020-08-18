@@ -32,7 +32,7 @@ def create_or_update_ref(repo, branch_name):
     master_branch = repo.get_branch('master')
     try:
         ref = repo.get_git_ref(f'heads/{branch_name}')
-        ref.edit(master_branch.commit.sha, force=True)
+        ref.edit(sha=master_branch.commit.sha, force=True)
     except:
         repo.create_git_ref(f'refs/heads/{branch_name}', sha=master_branch.commit.sha)
 
