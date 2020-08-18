@@ -31,6 +31,8 @@ parser.add_argument(
 def create_or_update_ref(repo, branch_name):
     master_branch = repo.get_branch('master')
     try:
+        branch = repo.get_branch(branch_name)
+        branch.remove_protection()
         ref = repo.get_git_ref(f'heads/{branch_name}')
         ref.edit(sha=master_branch.commit.sha, force=True)
     except:
