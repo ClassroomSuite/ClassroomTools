@@ -35,7 +35,7 @@ def create_or_update_ref(repo, branch_name):
         ref = repo.get_git_ref(f'heads/{branch_name}')
         ref.edit(master_branch.commit.sha, force=True)
     except:
-        repo.create_git_ref('refs/heads/remise', sha=master_branch.commit.sha)
+        repo.create_git_ref(f'refs/heads/{branch_name}', sha=master_branch.commit.sha)
 
 
 def add_push_restrictions(repo, branch_name):
