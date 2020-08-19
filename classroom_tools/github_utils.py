@@ -28,23 +28,23 @@ def delete_file(repo, path):
         print(f'File doesn\'t exist: {path}')
 
 
-def copy_file_to_repo(file, repo, message='Auto sync with template repo'):
+def copy_file_to_repo(file, repo, branch='master', message='Auto sync with template repo'):
     try:
-        old_file = repo.get_contents(path=file.path)
+        old_file = repo.get_contents(path=file.path, ref=branch)
         if file.sha != old_file.sha:
             repo.update_file(
                 path=old_file.path,
                 message=message,
                 content=file.decoded_content,
                 sha=old_file.sha,
-                branch='master'
+                branch=branch
             )
     except github.UnknownObjectException:
         repo.create_file(
             path=file.path,
             message=message,
             content=file.decoded_content,
-            branch='master'
+            branch=branch
         )
 
 
