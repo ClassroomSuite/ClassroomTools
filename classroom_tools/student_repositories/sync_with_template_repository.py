@@ -51,6 +51,11 @@ parser.add_argument(
     '--repo_filter',
     help='Prefix to filter repositories for as given assignment or exercise (for multiples student repositories)'
 )
+parser.add_argument(
+    '--branch',
+    default='master',
+    help='Branch of student repos to receive changes'
+)
 
 
 def _get_paths_to_update(files_to_update, template_repo):
@@ -110,7 +115,7 @@ def update_as_student_repo(files_to_update, template_repo_fullname, git_repo_pat
     git_repo.remote('origin').push()
 
 
-def update_with_github_api(files_to_update, template_repo_fullname, token, org_name, repo_filter):
+def update_with_github_api(files_to_update, template_repo_fullname, token, org_name, repo_filter, branch):
     github_utils.verify_token(token)
     template_repo = github_utils.get_repo(fullname=template_repo_fullname, token=token)
     template_files = get_relevant_template_files(
@@ -127,7 +132,7 @@ def update_with_github_api(files_to_update, template_repo_fullname, token, org_n
     for repo in repositories:
         print(f'{Fore.GREEN}\t{repo.full_name}')
         for file in template_files:
-            github_utils.copy_file_to_repo(file=file, repo=repo)
+            github_utils.copy_file_to_repo(file=file, repo=repo, branch=branch)
     print('\nSummary:')
     print(f'\tTotal number of repositories updated: {len(repositories)}')
 
@@ -148,7 +153,8 @@ def main(args):
             template_repo_fullname=args.template_repo_fullname,
             token=args.token,
             org_name=args.org_name,
-            repo_filter=args.repo_filter
+            repo_filter=args.repo_filter,
+            branch=args.branch
         )
 
 
