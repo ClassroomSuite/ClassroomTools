@@ -18,7 +18,11 @@ parser.add_argument(
     required=True,
     help='Prefix to filter repositories for as given assignment or exercise'
 )
-
+parser.add_argument(
+    '--branch',
+    default='master',
+    help='Branch of student repos to receive changes'
+)
 
 def main(args):
     print('\n\n' + 'Deleting workflows'.center(80, '='))
@@ -32,7 +36,7 @@ def main(args):
     )
     for repo in repositories:
         print(f'Deleting workflows from repo: {repo.full_name}')
-        deleted = github_utils.delete_all_workflows(repo)
+        deleted = github_utils.delete_all_workflows(repo, branch=args.branch)
         for path in deleted:
             print(f'\tRemoved: {path}')
     print('\nSummary:')
