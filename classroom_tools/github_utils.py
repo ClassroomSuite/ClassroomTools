@@ -14,14 +14,14 @@ def verify_token(token):
         raise Exception(f'{Fore.RED}Token expired or not provided{Style.RESET_ALL}')
 
 
-def delete_file(repo, path):
+def delete_file(repo, path, branch='master', message='Deleted file'):
     try:
-        contents = repo.get_contents(path=path)
+        contents = repo.get_contents(path=path, ref=branch)
         repo.delete_file(
             path=path,
-            message='Deleted file',
+            message=message,
             sha=contents.sha,
-            branch='master',
+            branch=branch
         )
         print(f'Deleted: {path}\n from: {repo.full_name}')
     except github.UnknownObjectException:
@@ -91,22 +91,17 @@ def get_students_repositories(token, org_name, repo_filter):
     return student_repos
 
 
-def delete_workflow(repo, path):
-    contents = repo.get_contents(path=path)
-    repo.delete_file(
-        path=path,
-        message='Auto deleted workflow',
-        sha=contents.sha,
-        branch='master',
-    )
-
-
-def delete_all_workflows(repo):
+def delete_all_workflows(repo, branch='master'):
     deleted = set()
     try:
-        contents = repo.get_contents(path='.github/workflows/')
+        contents = repo.get_contents(path='.github/workflows/', ref=branch)
         for content_file in contents:
-            delete_workflow(repo, path=content_file.path)
+            repo.delete_file(
+                path=content_file.path,
+                message='Auto deleted workflow',
+                sha=content_file.sha,
+                branch=branch
+            )
             deleted.add(content_file.path)
     except github.UnknownObjectException:
         pass
