@@ -5,6 +5,7 @@ import requests
 from colorama import Fore, Style
 
 from classroom_tools import github_utils
+from classroom_tools.verifications import repo_is_template
 
 parser = argparse.ArgumentParser('Create test repositories')
 parser.add_argument(
@@ -82,17 +83,20 @@ def main(args):
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     github_utils.verify_token(args.token)
     usernames = student_usernames(n=args.num_repos)
-    for name in usernames:
-        repo_name = f'{args.repo_filter}-{name}'
-        create_repo_from_template(
-            token=args.token,
-            template_repo_fullname=args.template_repo_fullname,
-            org_name=args.org_name,
-            repo_name=repo_name,
-            description='Repository for testing classroom features at scale',
-            private=args.private
-        )
-
+    try:
+        for name in usernames:
+            repo_name = f'{args.repo_filter}-{name}'
+            create_repo_from_template(
+                token=args.token,
+                template_repo_fullname=args.template_repo_fullname,
+                org_name=args.org_name,
+                repo_name=repo_name,
+                description='Repository for testing classroom features at scale',
+                private=args.private
+            )
+    except Exception as e:
+        print(e)
+        repo_is_template.main(['--token', args.token, '--repo_fullname', args.template_repo_fullname])
 
 if __name__ == '__main__':
     import sys
