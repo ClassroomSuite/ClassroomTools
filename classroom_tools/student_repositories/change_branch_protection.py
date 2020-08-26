@@ -1,4 +1,5 @@
 import argparse
+import distutils.util
 
 from colorama import Fore
 
@@ -28,8 +29,7 @@ parser.add_argument(
 )
 parser.add_argument(
     '--protect',
-    choices=[True, False],
-    type=bool,
+    type=lambda v: True if distutils.util.strtobool(v) else False,
     required=True,
     help='Protect branch'
 )
