@@ -24,7 +24,7 @@ parser.add_argument(
 parser.add_argument(
     '--head',
     required=True,
-    help='Name branch of protected branch with all of the student\'s commits'
+    help='Name of branch with all of the student\'s commits'
 )
 parser.add_argument(
     '--base',
