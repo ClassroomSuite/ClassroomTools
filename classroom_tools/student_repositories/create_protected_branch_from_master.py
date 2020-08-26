@@ -22,7 +22,7 @@ parser.add_argument(
     help='Prefix to filter repositories for a given assignment or exercise'
 )
 parser.add_argument(
-    '--branch_name',
+    '--branch',
     required=True,
     help='Name of protected branch'
 )
@@ -61,8 +61,8 @@ def main(args):
     for repo in repositories:
         print(f'Repo: {repo.full_name}')
         try:
-            create_or_update_ref(repo=repo, branch_name=args.branch_name)
-            add_push_restrictions(repo=repo, branch_name=args.branch_name)
+            create_or_update_ref(repo=repo, branch_name=args.branch)
+            add_push_restrictions(repo=repo, branch_name=args.branch)
         except:
             num_fail += 1
     print('\nSummary:')
