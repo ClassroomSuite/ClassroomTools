@@ -68,6 +68,9 @@ def get_repo(fullname, token=''):
 
 
 def get_students_repositories(token, org_name, repo_filter):
+    repo_filter = repo_filter.replace(' ', '')
+    if repo_filter == '':
+        raise Exception(f'{Fore.RED}repo_filter in settings/variables.txt can\'t be empty')
     try:
         g = github.Github(login_or_token=token)
         org = g.get_organization(login=org_name)
