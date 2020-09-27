@@ -1,4 +1,5 @@
 import argparse
+import distutils
 
 import github
 import requests
@@ -30,9 +31,9 @@ parser.add_argument(
 )
 parser.add_argument(
     '--private',
-    type=bool,
-    default=False,
-    help='Test repositories privacy'
+    type=lambda v: True if distutils.util.strtobool(v) else False,
+    required=True,
+    help='Repository privacy'
 )
 parser.add_argument(
     '--admin_collaborators',
