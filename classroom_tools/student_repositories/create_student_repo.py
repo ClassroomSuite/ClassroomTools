@@ -90,7 +90,7 @@ def main(args):
             template_repo_fullname=args.template_repo_fullname,
             org_name=args.org_name,
             repo_name=args.repo_name,
-            description='Repository for testing classroom features at scale',
+            description='Student repository',
             private=args.private
         )
         g = github.Github(login_or_token=args.token)
