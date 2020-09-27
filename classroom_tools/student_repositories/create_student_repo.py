@@ -1,5 +1,5 @@
 import argparse
-import distutils
+import distutils.util
 
 import github
 import requests
