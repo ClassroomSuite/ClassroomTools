@@ -1,5 +1,6 @@
 import argparse
 import distutils.util
+import pprint
 
 from colorama import Fore
 
@@ -47,7 +48,6 @@ def main(args):
     )
     num_fail = 0
     for repo in repositories:
-        print(f'Repo: {repo.full_name}')
         try:
             branch = repo.get_branch(args.branch)
             if args.protect:
@@ -58,7 +58,11 @@ def main(args):
                 branch.remove_protection()
             else:
                 pass
-        except:
+            print(f'{Fore.GREEN}Repo: {repo.full_name}')
+        except Exception as e:
+            print(f'{Fore.RED}Repo: {repo.full_name}')
+            pprint.pprint(vars(repo))
+            print(f'{Fore.RED}{e}')
             num_fail += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories: {len(repositories)}')
