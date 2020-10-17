@@ -85,7 +85,8 @@ def main(args):
         try:
             create_or_update_ref(repo=repo, base=args.base)
             add_push_restrictions(repo=repo, base=args.base)
-        except:
+        except Exception as e:
+            print(f'{Fore.RED}{e}')
             num_fail += 1
         try:
             repo.create_pull(
