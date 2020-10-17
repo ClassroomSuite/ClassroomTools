@@ -1,4 +1,5 @@
 import argparse
+import pprint
 
 from colorama import Fore
 
@@ -59,11 +60,14 @@ def main(args):
     )
     num_fail = 0
     for repo in repositories:
-        print(f'Repo: {repo.full_name}')
         try:
             create_or_update_ref(repo=repo, branch_name=args.branch)
             add_push_restrictions(repo=repo, branch_name=args.branch)
-        except:
+            print(f'{Fore.GREEN}Repo: {repo.full_name}')
+        except Exception as e:
+            print(f'{Fore.RED}Repo: {repo.full_name}')
+            pprint.pprint(vars(repo))
+            print(f'{Fore.RED}{e}')
             num_fail += 1
     print('\nSummary:')
     print(f'\tTotal number of repositories: {len(repositories)}')
