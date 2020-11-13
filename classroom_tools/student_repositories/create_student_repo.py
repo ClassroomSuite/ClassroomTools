@@ -80,7 +80,7 @@ def create_repo_from_template(token, template_repo_fullname, org_name, repo_name
 
 
 def main(args):
-    print('\n\n' + 'Creating test repositories'.center(80, '='))
+    print('\n\n' + 'Creating student repositories'.center(80, '='))
     args = parser.parse_args(args)
     print('Args:\n' + ''.join(f'\t{k}: {v}\n' for k, v in vars(args).items()))
     github_utils.verify_token(args.token)
