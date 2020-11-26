@@ -29,6 +29,7 @@ def get_tests_results(log_file):
 
 def add_tests_info(results, tests_associations_file):
     f = open(tests_associations_file, encoding='UTF-8')
+    print(f.readlines())
     tests_associations = json.load(f)
     for result in results:
         test = tests_associations[result['func_name']]
