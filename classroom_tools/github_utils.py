@@ -30,7 +30,9 @@ def delete_file(repo, path, branch='master', message='Deleted file'):
 
 def copy_file_to_repo(file, repo, branch='master', message='Auto sync with template repo'):
     try:
+        print(file.path)
         old_file = repo.get_contents(path=file.path, ref=branch)
+        print(old_file.path)
         if file.sha != old_file.sha:
             repo.update_file(
                 path=old_file.path,
