@@ -99,7 +99,7 @@ def get_students_repositories(token, org_name, repo_filter):
 def delete_all_workflows(repo, branch='master'):
     deleted = set()
     try:
-        contents = repo.get_contents(path='.github/workflows/', ref=branch)
+        contents = repo.get_contents(path='.github/workflows', ref=branch)
         for content_file in contents:
             repo.delete_file(
                 path=content_file.path,
