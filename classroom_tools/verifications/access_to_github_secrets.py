@@ -88,7 +88,7 @@ def get_available_secrets(token, repo_fullname):
 def get_required_secrets(token, repo_fullname):
     g = github.Github(login_or_token=token)
     repo = g.get_repo(full_name_or_id=repo_fullname)
-    workflow_files = github_utils.get_files_from_repo(repo=repo, path='.github/workflows/')
+    workflow_files = github_utils.get_files_from_repo(repo=repo, path='.github/workflows')
     all_required_secrets = set()
     required_secrets = {}
     for file in workflow_files:
